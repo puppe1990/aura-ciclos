@@ -1,0 +1,80 @@
+{{ define "content" }}
+<div class="flex items-center justify-between">
+  <div>
+    <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Análises</p>
+    <h2 class="text-2xl font-bold tracking-tight">Relatórios</h2>
+  </div>
+  <span class="text-sm font-bold text-primary">{{ .RegularLabel }}</span>
+</div>
+
+<div class="mt-5 grid grid-cols-2 gap-3">
+  <div class="bg-surface-container-lowest rounded-3xl p-4">
+    <p class="text-[11px] text-outline">Ciclo médio</p>
+    <p class="text-2xl font-bold text-primary">{{ .Forecast.CycleLength }}d</p>
+  </div>
+  <div class="bg-surface-container-lowest rounded-3xl p-4">
+    <p class="text-[11px] text-outline">Variação</p>
+    <p class="text-2xl font-bold">{{ .StdDevLabel }}</p>
+  </div>
+  <div class="bg-surface-container-lowest rounded-3xl p-4">
+    <p class="text-[11px] text-outline">Fase folicular</p>
+    <p class="text-2xl font-bold">{{ .Forecast.FollicularDays }}d</p>
+  </div>
+  <div class="bg-surface-container-lowest rounded-3xl p-4">
+    <p class="text-[11px] text-outline">Fase lútea</p>
+    <p class="text-2xl font-bold">{{ .Forecast.LutealDays }}d</p>
+  </div>
+</div>
+
+{{ if .Lengths }}
+<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
+  <h3 class="font-bold mb-3">Duração dos últimos ciclos</h3>
+  <div class="space-y-2">
+    {{ range .Lengths }}
+    <div class="flex items-center gap-3">
+      <span class="w-10 text-sm font-semibold">{{ . }}d</span>
+      <div class="flex-1 h-3 rounded-full bg-surface-container-high overflow-hidden">
+        <div class="h-full bg-secondary rounded-full" style="width: {{ . }}%; max-width: 100%;"></div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ if .TopSymptoms }}
+<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
+  <h3 class="font-bold mb-3">Sintomas mais registrados</h3>
+  <ul class="space-y-2">
+    {{ range .TopSymptoms }}
+    <li class="flex items-center justify-between text-sm"><span>{{ .Label }}</span><span class="font-bold text-primary">{{ .Count }}</span></li>
+    {{ end }}
+  </ul>
+</section>
+{{ end }}
+
+{{ if .Pregnant }}
+<section class="mt-5 bg-primary-fixed rounded-3xl p-5">
+  <h3 class="font-bold">Gravidez · semana {{ .Forecast.PregnancyWeek }}</h3>
+  <p class="mt-2 text-sm leading-relaxed">{{ .PregnancyNote }}</p>
+</section>
+{{ end }}
+
+<.form action="/modo" method="post" class="mt-5 bg-surface-container-low rounded-3xl p-5 space-y-3">
+  <h3 class="font-bold">Modo de uso</h3>
+  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
+    <input type="radio" name="mode" value="cycle" {{ if eq .Mode "cycle" }}checked{{ end }} />
+    <span><span class="block font-semibold">Acompanhar ciclo</span><span class="text-sm text-on-surface-variant">Previsão da menstruação e TPM.</span></span>
+  </label>
+  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
+    <input type="radio" name="mode" value="trying" {{ if eq .Mode "trying" }}checked{{ end }} />
+    <span><span class="block font-semibold">Crescer a família</span><span class="text-sm text-on-surface-variant">Destaque para o pico fértil, testes e temperatura basal.</span></span>
+  </label>
+  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
+    <input type="radio" name="mode" value="pregnancy" {{ if eq .Mode "pregnancy" }}checked{{ end }} />
+    <span><span class="block font-semibold">Acompanhar gravidez</span><span class="text-sm text-on-surface-variant">Semana a semana a partir da última menstruação.</span></span>
+  </label>
+  <.input name="pregnancy_lmp" type="date" label="Data da última menstruação" value="{{ .LMP }}" />
+  <.button type="submit">Atualizar modo</.button>
+</.form>
+{{ end }}

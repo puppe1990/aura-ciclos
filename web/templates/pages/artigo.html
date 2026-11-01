@@ -1,0 +1,11 @@
+{{ define "content" }}
+<p class="text-[11px] font-bold uppercase tracking-wider text-outline">Artigo</p>
+<h2 class="text-2xl font-bold tracking-tight">{{ .Article.Title }}</h2>
+<p class="mt-1 text-sm text-on-surface-variant">{{ .Article.ReviewedBy }}</p>
+<div class="mt-5 space-y-4 text-[15px] leading-7">
+  {{ range .Paragraphs }}
+  <p>{{ . }}</p>
+  {{ end }}
+</div>
+<p class="mt-6"><a href="/apoio" class="text-sm font-semibold text-primary">← Voltar ao apoio</a></p>
+{{ end }}

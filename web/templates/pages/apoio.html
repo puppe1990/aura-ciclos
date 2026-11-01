@@ -1,0 +1,57 @@
+{{ define "content" }}
+<div>
+  <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Apoio</p>
+  <h2 class="text-2xl font-bold tracking-tight">Maya e artigos</h2>
+  <p class="mt-1 text-sm text-on-surface-variant">A Maya responde com regras sobre ciclo, cólica, atraso, ovulação e TPM. Não é uma médica e não substitui consulta.</p>
+</div>
+
+<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
+  <h3 class="font-bold">Conversar com a Maya</h3>
+  <div class="space-y-2 max-h-72 overflow-y-auto">
+    {{ range .Messages }}
+    <div class="rounded-2xl px-3 py-2 text-sm {{ if eq .Role "maya" }}bg-secondary-fixed text-on-secondary-fixed{{ else }}bg-surface-container{{ end }}">
+      <p class="text-[11px] font-bold uppercase tracking-wider opacity-70">{{ .Role }}</p>
+      <p class="mt-0.5 whitespace-pre-wrap">{{ .Body }}</p>
+    </div>
+    {{ else }}
+    <p class="text-sm text-on-surface-variant">Pergunte sobre cólica, atraso, ovulação ou TPM.</p>
+    {{ end }}
+  </div>
+  <.form action="/apoio/maya" method="post">
+    <.input name="question" type="text" label="Sua pergunta" />
+    <.button type="submit">Enviar</.button>
+  </.form>
+</section>
+
+<section class="mt-5 space-y-3">
+  <h3 class="font-bold">Artigos revisados</h3>
+  {{ range .Articles }}
+  <a href="/apoio/{{ .Slug }}" class="block bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
+    <h4 class="font-bold">{{ .Title }}</h4>
+    <p class="mt-1 text-sm text-on-surface-variant">{{ .Summary }}</p>
+    <p class="mt-2 text-[11px] font-semibold text-outline">{{ .ReviewedBy }}</p>
+  </a>
+  {{ end }}
+</section>
+
+<.form action="/lembretes" method="post" class="mt-5 bg-surface-container-low rounded-3xl p-5 space-y-3">
+  <h3 class="font-bold">Lembretes</h3>
+  <p class="text-sm text-on-surface-variant">Eles aparecem na tela do ciclo neste aparelho. Notificação do sistema só se o navegador permitir.</p>
+  <.select name="kind" label="Tipo">
+    <option value="pill">Pílula</option>
+    <option value="water">Água</option>
+    <option value="period">Início da menstruação</option>
+  </.select>
+  <.input name="hour" type="number" label="Hora" value="8" min="0" max="23" />
+  <.input name="minute" type="number" label="Minuto" value="0" min="0" max="59" />
+  <.button type="submit">Salvar lembrete</.button>
+</.form>
+
+{{ if .Reminders }}
+<ul class="mt-4 space-y-2">
+  {{ range .Reminders }}
+  <li class="rounded-2xl bg-surface-container-lowest px-4 py-3 text-sm">{{ if eq .Kind "pill" }}Pílula{{ else if eq .Kind "water" }}Água{{ else }}Menstruação{{ end }} · {{ printf "%02d:%02d" .Hour .Minute }}</li>
+  {{ end }}
+</ul>
+{{ end }}
+{{ end }}

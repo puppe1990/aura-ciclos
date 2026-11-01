@@ -1,0 +1,23 @@
+{{ define "content" }}
+<div class="flex items-center justify-center min-h-[calc(100vh-12rem)] px-4 py-8">
+  <div class="w-full max-w-md mx-auto bg-surface-container-lowest rounded-3xl p-6 md:p-7 shadow-sm">
+    {{ if .Created }}
+    <h2 class="text-2xl font-bold tracking-tight">Guarde este código</h2>
+    <p class="mt-2 text-sm text-on-surface-variant">Ele é a única chave da conta anônima. Sem o código não há como reabrir. O app não mostra e-mail e não pede nome.</p>
+    <p class="mt-5 font-mono text-xl tracking-widest text-center bg-surface-container rounded-2xl py-4 px-3" amarra-hook="clipboard" data-amarra-clipboard="{{ .RecoveryCode }}">{{ .RecoveryCode }}</p>
+    <p class="mt-3 text-xs text-outline">Toque no código para copiar. Anote em um lugar seguro.</p>
+    <a href="/ciclo" class="mt-6 flex h-12 items-center justify-center rounded-full bg-primary text-on-primary font-semibold">Ir para o ciclo</a>
+    {{ else }}
+    <h2 class="text-2xl font-bold tracking-tight">{{ t "auth.anon_title" }}</h2>
+    <p class="mt-2 text-sm text-on-surface-variant">{{ t "auth.anon_help" }}</p>
+    <p class="mt-3 text-sm text-on-surface-variant">Os registros ficam em SQLite no servidor, protegidos por sessão. Não há criptografia ponta a ponta.</p>
+    <.form action="/anonimo" method="post" class="mt-5" data-amarra-skip>
+      <.button type="submit">{{ t "auth.anon_submit" }}</.button>
+    </.form>
+    <p class="mt-4 text-center text-sm text-on-surface-variant">
+      <a class="text-primary font-semibold" href="/login">{{ t "auth.login_title" }}</a>
+    </p>
+    {{ end }}
+  </div>
+</div>
+{{ end }}

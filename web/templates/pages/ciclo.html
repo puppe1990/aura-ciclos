@@ -1,0 +1,115 @@
+{{ define "content" }}
+<div class="flex items-center justify-between">
+  <div>
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[11px] font-bold uppercase tracking-wider">Ritmo biológico</span>
+    <h2 class="mt-1.5 text-2xl font-bold tracking-tight">Olá, {{ .Name }}</h2>
+  </div>
+  <div class="text-right">
+    <span class="block text-[11px] font-bold uppercase tracking-wider text-outline">Previsão</span>
+    <span class="text-sm font-bold text-primary">{{ .RegularLabel }}</span>
+  </div>
+</div>
+
+<div class="mt-5 overflow-x-auto -mx-4 px-4 no-scrollbar">
+  <div class="flex items-center gap-2.5 min-w-max">
+    {{ range .Week }}
+    <a href="/registro?dia={{ .Date }}" class="flex flex-col items-center justify-between p-2.5 w-14 h-20 rounded-2xl {{ if .Today }}bg-primary text-on-primary shadow-lg shadow-primary/20{{ else }}bg-surface-container text-on-surface-variant{{ end }}">
+      <span class="text-[11px] font-bold opacity-80">{{ .Weekday }}</span>
+      <span class="text-base font-bold">{{ .Day }}</span>
+      <span class="w-2 h-2 rounded-full {{ .PhaseClass }}"></span>
+    </a>
+    {{ end }}
+  </div>
+</div>
+
+{{ if .Pregnant }}
+<div class="relative mt-5 bg-surface-container-lowest rounded-3xl p-6 shadow-sm overflow-hidden">
+  <div class="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-primary-fixed/35 blur-3xl pointer-events-none"></div>
+  <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Semana da gestação</p>
+  <p class="mt-1 text-4xl font-bold text-primary">Semana {{ .Forecast.PregnancyWeek }}</p>
+  <p class="mt-2 text-sm text-on-surface-variant">Parto estimado em {{ .DueDate }} · {{ .Forecast.DaysUntilDue }} dias</p>
+  <p class="mt-4 text-sm leading-relaxed">{{ .PregnancyNote }}</p>
+</div>
+{{ else }}
+<div class="relative mt-5 bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col items-center text-center overflow-hidden">
+  <div class="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-primary-fixed/35 blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+  <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-xs font-semibold mb-4">{{ .PhaseLabel }}</div>
+  <div class="relative w-64 h-64 flex items-center justify-center my-2">
+    <svg class="w-full h-full" viewBox="0 0 240 240" aria-hidden="true">
+      <circle cx="120" cy="120" fill="none" r="98" stroke="#F1EDEA" stroke-linecap="round" stroke-width="14"></circle>
+      <circle cx="120" cy="120" fill="none" r="98" stroke="#E5E2DF" stroke-dasharray="{{ printf "%.1f" .Ring.PeriodDash }} 515" stroke-dashoffset="{{ printf "%.1f" .Ring.PeriodOff }}" stroke-linecap="round" stroke-width="14"></circle>
+      <circle cx="120" cy="120" fill="none" r="98" stroke="#EDDCFF" stroke-dasharray="{{ printf "%.1f" .Ring.FollicularDash }} 515" stroke-dashoffset="{{ printf "%.1f" .Ring.FollicularOff }}" stroke-linecap="round" stroke-width="14"></circle>
+      <circle cx="120" cy="120" fill="none" r="98" stroke="#C94A38" stroke-dasharray="{{ printf "%.1f" .Ring.FertileDash }} 515" stroke-dashoffset="{{ printf "%.1f" .Ring.FertileOff }}" stroke-linecap="round" stroke-width="14"></circle>
+      <circle cx="120" cy="120" fill="none" r="98" stroke="#F1EDEA" stroke-dasharray="{{ printf "%.1f" .Ring.LutealDash }} 515" stroke-dashoffset="{{ printf "%.1f" .Ring.LutealOff }}" stroke-linecap="round" stroke-width="14"></circle>
+      <circle cx="{{ printf "%.1f" .Ring.PinX }}" cy="{{ printf "%.1f" .Ring.PinY }}" fill="#A83223" r="9"></circle>
+      <circle cx="{{ printf "%.1f" .Ring.PinX }}" cy="{{ printf "%.1f" .Ring.PinY }}" fill="#FFFFFF" r="4"></circle>
+    </svg>
+    <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
+      <span class="text-[11px] font-bold uppercase tracking-wider text-outline">Hoje no ciclo</span>
+      <span class="text-4xl font-bold text-primary leading-none my-1">Dia {{ .Forecast.CycleDay }}</span>
+      <span class="text-xs font-medium text-on-surface-variant">de {{ .Forecast.CycleLength }} dias</span>
+      {{ if gt .Forecast.ConceptionChance 0 }}
+      <span class="mt-2 px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-[11px] font-bold">Janela fértil</span>
+      {{ end }}
+    </div>
+  </div>
+  <div class="w-full mt-3 flex items-center justify-around bg-surface-container-low rounded-2xl p-3">
+    <div class="flex flex-col items-center">
+      <span class="text-[11px] text-on-surface-variant">Próxima menstruação</span>
+      <span class="text-sm font-bold mt-0.5">em {{ .Forecast.DaysUntilPeriod }} dias</span>
+      <span class="text-[11px] text-outline">{{ .NextPeriodDate }}</span>
+    </div>
+    <div class="h-6 w-px bg-surface-variant"></div>
+    <div class="flex flex-col items-center">
+      <span class="text-[11px] text-on-surface-variant">Precisão da previsão</span>
+      <span class="text-sm font-bold text-primary mt-0.5">{{ .Forecast.ConfidencePct }}%</span>
+    </div>
+  </div>
+</div>
+
+{{ if or .Trying (gt .Forecast.ConceptionChance 0) }}
+<div class="mt-4 bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="font-bold">Janela fértil</h3>
+      <p class="text-sm text-on-surface-variant">{{ .FertileStart }} – {{ .FertileEnd }} · ovulação {{ .OvulationDate }}</p>
+    </div>
+    <span class="px-3 py-1 rounded-full bg-primary text-on-primary text-[11px] font-bold">{{ .Forecast.ConceptionChance }}%</span>
+  </div>
+  <div class="w-full h-3 rounded-full bg-surface-container-high overflow-hidden">
+    <div class="h-full bg-primary rounded-full" style="width: {{ .Forecast.ConceptionChance }}%;"></div>
+  </div>
+  <p class="text-sm text-outline">Chance relativa de concepção hoje. Fora da janela, a chance cai para perto de zero neste ciclo.</p>
+</div>
+{{ end }}
+{{ end }}
+
+<div class="mt-4 bg-surface-container-low rounded-3xl p-5 space-y-2">
+  <p class="text-sm font-bold">IA adaptativa Aura</p>
+  <p class="text-sm text-on-surface-variant leading-relaxed">A previsão usa a média dos últimos {{ len .Forecast.Lengths }} intervalos. {{ if .Forecast.Irregular }}Ciclo irregular: a confiança fica limitada.{{ else }}Variação baixa — confiança {{ .Forecast.Confidence }} de 4.{{ end }} Teste de ovulação positivo vale mais que temperatura basal, que vale mais que o calendário.</p>
+</div>
+
+{{ if .Reminders }}
+<div class="mt-4 space-y-2">
+  <h3 class="font-bold">Lembretes de hoje</h3>
+  {{ range .Reminders }}
+  <p class="rounded-2xl bg-surface-container-lowest px-4 py-3 text-sm">{{ if eq .Kind "pill" }}Pílula{{ else if eq .Kind "water" }}Água{{ else }}Menstruação{{ end }} às {{ printf "%02d:%02d" .Hour .Minute }}</p>
+  {{ end }}
+</div>
+{{ end }}
+
+<.form action="/ciclo/periodo" method="post" class="mt-5 bg-surface-container-lowest rounded-3xl p-5 space-y-3">
+  <h3 class="font-bold">Registrar menstruação</h3>
+  <.input name="started_on" type="date" label="Início" value="{{ .Today }}" />
+  <.input name="ended_on" type="date" label="Fim (opcional)" />
+  <.select name="flow" label="Fluxo">
+    <option value="leve">Leve</option>
+    <option value="medio" selected>Médio</option>
+    <option value="intenso">Intenso</option>
+  </.select>
+  <.button type="submit">Salvar menstruação</.button>
+</.form>
+
+<a href="/registro" class="mt-4 flex h-14 items-center justify-center gap-2 rounded-full bg-primary text-on-primary font-semibold shadow-xl shadow-primary/25">Registrar sintomas de hoje</a>
+{{ end }}

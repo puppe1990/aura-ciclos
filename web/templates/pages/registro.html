@@ -1,0 +1,69 @@
+{{ define "content" }}
+<div class="flex items-center justify-between">
+  <div>
+    <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Diário</p>
+    <h2 class="text-2xl font-bold tracking-tight">{{ .DayLabel }}</h2>
+  </div>
+  <span class="text-sm font-semibold text-primary">{{ .PhaseLabel }}</span>
+</div>
+
+<.form action="/registro" method="post" class="mt-5 space-y-5">
+  <input type="hidden" name="logged_on" value="{{ .Day }}" />
+
+  {{ range .Groups }}
+  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
+    <h3 class="font-bold mb-3">{{ .Label }}</h3>
+    <div class="flex flex-wrap gap-2">
+      {{ range .Items }}
+      <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm cursor-pointer bg-surface-container-low text-on-surface has-[:checked]:bg-primary has-[:checked]:text-on-primary">
+        <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+        {{ .Label }}
+      </label>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
+    <h3 class="font-bold">Humor, energia e estilo de vida</h3>
+    <.select name="mood" label="Humor">
+      <option value="">—</option>
+      <option value="ansiedade" {{ if eq .Log.Mood "ansiedade" }}selected{{ end }}>Ansiedade</option>
+      <option value="felicidade" {{ if eq .Log.Mood "felicidade" }}selected{{ end }}>Felicidade</option>
+      <option value="irritabilidade" {{ if eq .Log.Mood "irritabilidade" }}selected{{ end }}>Irritabilidade</option>
+      <option value="tristeza" {{ if eq .Log.Mood "tristeza" }}selected{{ end }}>Tristeza</option>
+      <option value="calma" {{ if eq .Log.Mood "calma" }}selected{{ end }}>Calma</option>
+    </.select>
+    <.input name="energy" type="number" label="Energia (1–5)" value="{{ .Log.Energy }}" min="0" max="5" />
+    <.input name="sleep_hours" type="text" label="Horas de sono" value="{{ .Log.SleepHours }}" />
+    <.input name="water_glasses" type="number" label="Copos de água" value="{{ .Log.WaterGlasses }}" min="0" />
+    <.input name="exercise_minutes" type="number" label="Minutos de exercício" value="{{ .Log.ExerciseMinutes }}" min="0" />
+    <.select name="sex" label="Relação sexual">
+      <option value="">—</option>
+      <option value="protegida" {{ if eq .Log.Sex "protegida" }}selected{{ end }}>Com proteção</option>
+      <option value="desprotegida" {{ if eq .Log.Sex "desprotegida" }}selected{{ end }}>Sem proteção</option>
+      <option value="nao" {{ if eq .Log.Sex "nao" }}selected{{ end }}>Não</option>
+    </.select>
+  </section>
+
+  {{ if .Trying }}
+  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
+    <h3 class="font-bold">Crescer a família</h3>
+    <.input name="bbt_celsius" type="text" label="Temperatura basal (°C)" value="{{ .BBTDisplay }}" />
+    <.select name="ovulation_test" label="Teste de ovulação">
+      <option value="">—</option>
+      <option value="positivo" {{ if eq .Log.OvulationTest "positivo" }}selected{{ end }}>Positivo</option>
+      <option value="negativo" {{ if eq .Log.OvulationTest "negativo" }}selected{{ end }}>Negativo</option>
+    </.select>
+    <.select name="pregnancy_test" label="Teste de gravidez">
+      <option value="">—</option>
+      <option value="positivo" {{ if eq .Log.PregnancyTest "positivo" }}selected{{ end }}>Positivo</option>
+      <option value="negativo" {{ if eq .Log.PregnancyTest "negativo" }}selected{{ end }}>Negativo</option>
+    </.select>
+  </section>
+  {{ end }}
+
+  <.input name="notes" type="text" label="Notas" value="{{ .Log.Notes }}" />
+  <.button type="submit">Salvar registro</.button>
+</.form>
+{{ end }}
