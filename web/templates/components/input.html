@@ -1,0 +1,13 @@
+<div class="mt-4">
+  <label class="block text-sm font-medium text-on-surface-variant mb-1" for="{{ .Name }}">{{ .Label }}</label>
+  <input
+    class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary user-invalid:border-red-600"
+    id="{{ .Name }}"
+    name="{{ .Name }}"
+    type="{{ if .Type }}{{ .Type }}{{ else }}text{{ end }}"
+    {{- if .Type }}{{ if eq .Type "file" }}{{ else }} value="{{ .Value }}"{{ end }}{{ else }} value="{{ .Value }}"{{ end }}
+    {{- if .Accept }} accept="{{ .Accept }}"{{ end }}
+    {{- if .Error }} aria-invalid="true"{{ end }}
+  >
+  {{ if .Error }}<p class="text-red-600 text-sm mt-1">{{ .Error }}</p>{{ end }}
+</div>

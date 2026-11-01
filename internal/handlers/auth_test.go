@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -62,6 +63,24 @@ func TestAuth_RevocationFailureReturnsServerError(t *testing.T) {
 		})
 	}
 }
+func TestAuth_Login_guestSubmitUsesStitchPrimary(t *testing.T) {
+	h, _ := newAuthHandler(t)
+	req := httptest.NewRequest(http.MethodGet, "/login", nil)
+	rr := httptest.NewRecorder()
+	h.Login(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d body=%s", rr.Code, rr.Body.String())
+	}
+	body := rr.Body.String()
+	submit := regexp.MustCompile(`(?s)<button[^>]*type="submit"[^>]*>Sign in</button>`).FindString(body)
+	if submit == "" {
+		t.Fatalf("missing Sign in submit button, body=%s", body)
+	}
+	if !strings.Contains(submit, "bg-primary") || !strings.Contains(submit, "rounded-full") {
+		t.Errorf("Sign in should be a Stitch primary pill, got: %s", submit)
+	}
+}
+
 func TestAuth_Login_redirectsWhenAuthenticated(t *testing.T) {
 	h, s := newAuthHandler(t)
 

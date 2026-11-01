@@ -1,0 +1,11 @@
+<div class="mt-4">
+  <label class="block text-sm font-medium text-on-surface-variant mb-1" for="{{ .Name }}">{{ .Label }}</label>
+  <select
+    class="w-full rounded-2xl border border-outline-variant bg-surface-container-low text-on-surface px-3 py-2.5 outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary user-invalid:border-red-600"
+    id="{{ .Name }}"
+    name="{{ .Name }}"
+    amarra-hook="select"
+    {{- if .Error }} aria-invalid="true"{{ end }}
+  >{{ .Inner }}</select>
+  {{ if .Error }}<p class="text-red-600 text-sm mt-1">{{ .Error }}</p>{{ end }}
+</div>

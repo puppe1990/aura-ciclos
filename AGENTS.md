@@ -1,6 +1,6 @@
 # aura-ciclos — AI Conventions
 
-Aura Ciclos is a women's-cycle tracker on Amarra-cais. Host `aura-ciclos.apps.gestaobem.com`. After auth the app lands on `/ciclo`. Maya is keyword/rules, not an LLM. Privacy copy stays honest: SQLite on the server, no E2EE. Fixtures come from `internal/testdata` (`gofakeit` seed `20261101`) — that package must not import `internal/cycle`. Default i18n catalog is English; boot with `LOCALE=pt`.
+Aura Ciclos is a women's-cycle tracker on Amarra-cais. Host `aura-ciclos.apps.gestaobem.com`. After auth the app lands on `/ciclo`. Maya is keyword/rules, not an LLM. Privacy copy stays honest: SQLite on the server, no E2EE. Fixtures come from `internal/testdata` (`gofakeit` seed `20261101`) — that package must not import `internal/cycle`. Default i18n catalog is English; boot with `LOCALE=pt`. Kit `button`/`input`/`select`/`password` are overridden in `web/templates/components/` (Stitch pills); do not rely on shipped `bg-copper` surviving a PaaS CSS build.
 
 Primary reader is often an LLM agent. Prefer small greps, small modules, and headless tests.
 
