@@ -25,28 +25,40 @@ func (h *TrackerHandler) Ciclo(w http.ResponseWriter, r *http.Request) {
 		httpx.ServerError(w, err, h.cfg)
 		return
 	}
+	phys := cycle.Physiology(data.fc.Phase)
+	fertileN, fertileTotal := cycle.FertileIndex(h.today(), data.fc.FertileStart, data.fc.FertileEnd)
 	h.page(w, r, "ciclo", map[string]any{
-		"Title":          "Ciclo",
-		"ActiveNav":      "ciclo",
-		"Name":           greetName(data.user, data.profile),
-		"Anonymous":      data.user.Anonymous || data.profile.Anonymous,
-		"Mode":           data.profile.Mode,
-		"ModeLabel":      cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
-		"Forecast":       data.fc,
-		"PhaseLabel":     cycle.PhaseLabel(data.fc.Phase),
-		"RegularLabel":   regularityLabel(data.fc),
-		"Week":           weekStrip(h.today(), data.fc),
-		"Ring":           ringView(data.fc),
-		"Reminders":      rems,
-		"PregnancyNote":  cycle.PregnancyNote(data.fc.PregnancyWeek),
-		"Today":          h.today().Format(time.DateOnly),
-		"NextPeriodDate": formatDayBR(data.fc.NextPeriodOn),
-		"FertileStart":   formatDayBR(data.fc.FertileStart),
-		"FertileEnd":     formatDayBR(data.fc.FertileEnd),
-		"OvulationDate":  formatDayBR(data.fc.OvulationOn),
-		"DueDate":        formatDayBR(data.fc.DueOn),
-		"Trying":         data.profile.Mode == models.ModeTrying,
-		"Pregnant":       data.profile.Mode == models.ModePregnancy,
+		"Title":           "Ciclo",
+		"ActiveNav":       "ciclo",
+		"Name":            greetName(data.user, data.profile),
+		"Anonymous":       data.user.Anonymous || data.profile.Anonymous,
+		"Mode":            data.profile.Mode,
+		"ModeLabel":       cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
+		"Forecast":        data.fc,
+		"PhaseLabel":      cycle.PhaseLabel(data.fc.Phase),
+		"PhaseBadge":      phys.Badge,
+		"RegularLabel":    regularityLabel(data.fc),
+		"Week":            weekStrip(h.today(), data.fc, true),
+		"Ring":            ringView(data.fc),
+		"Reminders":       rems,
+		"PregnancyNote":   cycle.PregnancyNote(data.fc.PregnancyWeek),
+		"PregnancySize":   cycle.PregnancySize(data.fc.PregnancyWeek),
+		"Today":           h.today().Format(time.DateOnly),
+		"NextPeriodDate":  formatDayBR(data.fc.NextPeriodOn),
+		"FertileStart":    formatDayBR(data.fc.FertileStart),
+		"FertileEnd":      formatDayBR(data.fc.FertileEnd),
+		"OvulationDate":   formatDayBR(data.fc.OvulationOn),
+		"DueDate":         formatDayBR(data.fc.DueOn),
+		"Trying":          data.profile.Mode == models.ModeTrying,
+		"Pregnant":        data.profile.Mode == models.ModePregnancy,
+		"Physiology":      phys,
+		"ChanceLabel":     cycle.ChanceWords(data.fc.ConceptionChance),
+		"ConfidenceWords": cycle.ConfidenceWords(data.fc.Confidence),
+		"IntervalRange":   cycle.IntervalRange(data.fc.Lengths),
+		"FertileN":        fertileN,
+		"FertileTotal":    fertileTotal,
+		"Spark":           bbtSparkline(data.logs),
+		"PeakFertile":     data.fc.ConceptionChance >= 75,
 	})
 }
 
@@ -172,25 +184,25 @@ type weekChip struct {
 	PhaseClass string
 }
 
-func weekStrip(today time.Time, fc cycle.Result) []weekChip {
+func weekStrip(anchor time.Time, fc cycle.Result, labelToday bool) []weekChip {
 	weekdays := []string{"DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"}
 	out := make([]weekChip, 0, 7)
-	start := today.AddDate(0, 0, -3)
+	start := anchor.AddDate(0, 0, -3)
 	for i := 0; i < 7; i++ {
 		d := start.AddDate(0, 0, i)
 		dayFC := fc
-		if !sameUTCDay(d, today) {
+		if !sameUTCDay(d, anchor) {
 			dayFC.Phase = phaseOn(d, fc)
 		}
 		chip := weekChip{
 			Date:       d.Format(time.DateOnly),
 			Weekday:    weekdays[d.Weekday()],
 			Day:        d.Day(),
-			Today:      sameUTCDay(d, today),
+			Today:      sameUTCDay(d, anchor),
 			Phase:      dayFC.Phase,
 			PhaseClass: phaseDot(dayFC.Phase),
 		}
-		if chip.Today {
+		if chip.Today && labelToday {
 			chip.Weekday = "HOJE"
 		}
 		out = append(out, chip)
@@ -269,7 +281,8 @@ func ringView(fc cycle.Result) ringViewModel {
 	follicular := follicularDays / float64(length) * circ
 	fertile := fertileDays / float64(length) * circ
 	luteal := lutealDays / float64(length) * circ
-	theta := -3.14159265/2 + 2*3.14159265*float64(fc.CycleDay)/float64(length)
+	// SVG circle starts at 3 o'clock; the template rotates -90° so day 0 sits at 12 o'clock.
+	theta := 2 * math.Pi * float64(fc.CycleDay) / float64(length)
 	return ringViewModel{
 		PeriodDash:     period,
 		FollicularDash: follicular,

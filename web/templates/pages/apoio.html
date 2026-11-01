@@ -1,57 +1,148 @@
 {{ define "content" }}
-<div>
-  <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Apoio</p>
-  <h2 class="text-2xl font-bold tracking-tight">Maya e artigos</h2>
-  <p class="mt-1 text-sm text-on-surface-variant">A Maya responde com regras sobre ciclo, cólica, atraso, ovulação e TPM. Não é uma médica e não substitui consulta.</p>
-</div>
-
-<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
-  <h3 class="font-bold">Conversar com a Maya</h3>
-  <div class="space-y-2 max-h-72 overflow-y-auto">
-    {{ range .Messages }}
-    <div class="rounded-2xl px-3 py-2 text-sm {{ if eq .Role "maya" }}bg-secondary-fixed text-on-secondary-fixed{{ else }}bg-surface-container{{ end }}">
-      <p class="text-[11px] font-bold uppercase tracking-wider opacity-70">{{ .Role }}</p>
-      <p class="mt-0.5 whitespace-pre-wrap">{{ .Body }}</p>
+<div class="flex flex-col pb-space-xl gap-space-lg">
+  <section class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+    <div class="absolute -right-12 -top-12 w-40 h-40 bg-secondary-container/40 rounded-full blur-2xl pointer-events-none"></div>
+    <div class="flex items-start justify-between gap-space-sm z-10">
+      <div class="flex flex-col gap-space-xs">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-sm w-fit">
+          {{ template "icon_spa" . }}
+          <span>Espaço de Cuidado &amp; Autonomia</span>
+        </div>
+        <h2 class="text-headline-lg-mobile text-on-surface">Seu Refúgio Seguro</h2>
+        <p class="text-body-sm text-on-surface-variant">
+          Perguntas com regras sobre o ciclo, dados no servidor da app e alertas neste aparelho.
+        </p>
+      </div>
     </div>
-    {{ else }}
-    <p class="text-sm text-on-surface-variant">Pergunte sobre cólica, atraso, ovulação ou TPM.</p>
-    {{ end }}
-  </div>
-  <.form action="/apoio/maya" method="post">
-    <.input name="question" type="text" label="Sua pergunta" />
-    <.button type="submit">Enviar</.button>
-  </.form>
-</section>
+  </section>
 
-<section class="mt-5 space-y-3">
-  <h3 class="font-bold">Artigos revisados</h3>
-  {{ range .Articles }}
-  <a href="/apoio/{{ .Slug }}" class="block bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
-    <h4 class="font-bold">{{ .Title }}</h4>
-    <p class="mt-1 text-sm text-on-surface-variant">{{ .Summary }}</p>
-    <p class="mt-2 text-[11px] font-semibold text-outline">{{ .ReviewedBy }}</p>
-  </a>
-  {{ end }}
-</section>
+  <section class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between px-space-xs">
+      <h3 class="text-headline-md text-on-surface flex items-center gap-1.5">
+        {{ template "icon_shield" . }}
+        Segurança &amp; Sigilo
+      </h3>
+      <span class="text-label-sm text-primary uppercase tracking-wider">Servidor próprio</span>
+    </div>
+    <div class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col gap-space-md">
+      <div class="flex items-start gap-space-sm">
+        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center flex-shrink-0">{{ template "icon_shield" . }}</div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-space-xs">
+            <span class="text-label-lg text-on-surface">Modo Anônimo Total</span>
+            {{ if .Anonymous }}
+            <span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-sm flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              Ativo
+            </span>
+            {{ end }}
+          </div>
+          <p class="text-body-sm text-on-surface-variant mt-1">
+            {{ if .Anonymous }}Esta conta não pede nome nem e-mail. Guarde o código de recuperação.{{ else }}Crie uma conta anônima na entrada se preferir não informar e-mail.{{ end }}
+          </p>
+        </div>
+      </div>
+      <div class="bg-surface-container-low rounded-2xl p-space-sm">
+        <p class="text-label-sm text-on-surface">Os registros ficam em SQLite no servidor, protegidos por sessão e senha.</p>
+        <p class="text-body-sm text-on-surface-variant mt-0.5">Não há criptografia ponta a ponta neste produto: quem opera o servidor consegue, em tese, ler o banco.</p>
+      </div>
+    </div>
+  </section>
 
-<.form action="/lembretes" method="post" class="mt-5 bg-surface-container-low rounded-3xl p-5 space-y-3">
-  <h3 class="font-bold">Lembretes</h3>
-  <p class="text-sm text-on-surface-variant">Eles aparecem na tela do ciclo neste aparelho. Notificação do sistema só se o navegador permitir.</p>
-  <.select name="kind" label="Tipo">
-    <option value="pill">Pílula</option>
-    <option value="water">Água</option>
-    <option value="period">Início da menstruação</option>
-  </.select>
-  <.input name="hour" type="number" label="Hora" value="8" min="0" max="23" />
-  <.input name="minute" type="number" label="Minuto" value="0" min="0" max="59" />
-  <.button type="submit">Salvar lembrete</.button>
-</.form>
+  <section class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between px-space-xs">
+      <div class="flex items-center gap-1.5">
+        <span class="text-primary">{{ template "icon_spark" . }}</span>
+        <h3 class="text-headline-md text-on-surface">Assistente Maya IA</h3>
+      </div>
+      <span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-label-sm">Regras, não LLM</span>
+    </div>
+    <div class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm flex flex-col gap-space-md">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="text-label-lg text-on-surface">Conversar com a Maya</span>
+          <span class="text-label-sm text-secondary">Regras do ciclo</span>
+        </div>
+        <p class="text-body-sm text-on-surface-variant mt-1">
+          A Maya responde com regras sobre cólica, atraso, ovulação e TPM. Não é uma médica e não substitui consulta.
+        </p>
+      </div>
+      <div class="space-y-2 max-h-72 overflow-y-auto">
+        {{ range .Messages }}
+        <div class="rounded-2xl px-3 py-2 text-body-sm {{ if eq .Role "maya" }}bg-secondary-fixed text-on-secondary-fixed{{ else }}bg-surface-container{{ end }}">
+          <p class="text-label-sm uppercase tracking-wider opacity-70">{{ .Role }}</p>
+          <p class="mt-0.5 whitespace-pre-wrap">{{ .Body }}</p>
+        </div>
+        {{ else }}
+        <div class="bg-surface-container-low rounded-2xl p-space-md">
+          <p class="text-label-sm text-on-surface-variant">Sugestão de hoje · {{ .PhaseBadge }} (Dia {{ .Forecast.CycleDay }})</p>
+          <p class="text-body-sm text-on-surface italic mt-1">“{{ .Suggestion }}”</p>
+        </div>
+        {{ end }}
+      </div>
+      <.form action="/apoio/maya" method="post" class="space-y-3">
+        <p class="text-label-sm text-on-surface-variant uppercase tracking-wider">Perguntas Rápidas</p>
+        <div class="flex flex-wrap gap-space-xs">
+          <button type="submit" name="question" value="Por que sinto cólica antes do ciclo?" class="px-3 py-2 rounded-full bg-surface-container text-on-surface text-body-sm">Por que sinto cólica antes do ciclo?</button>
+          <button type="submit" name="question" value="Como funciona a temperatura basal?" class="px-3 py-2 rounded-full bg-surface-container text-on-surface text-body-sm">Como funciona a temperatura basal?</button>
+          <button type="submit" name="question" value="Alívio para inchaço" class="px-3 py-2 rounded-full bg-surface-container text-on-surface text-body-sm">Alívio para inchaço</button>
+        </div>
+        <.input name="question" type="text" label="Faça uma pergunta íntima e segura" />
+        <.button type="submit">Enviar</.button>
+      </.form>
+    </div>
+  </section>
 
-{{ if .Reminders }}
-<ul class="mt-4 space-y-2">
-  {{ range .Reminders }}
-  <li class="rounded-2xl bg-surface-container-lowest px-4 py-3 text-sm">{{ if eq .Kind "pill" }}Pílula{{ else if eq .Kind "water" }}Água{{ else }}Menstruação{{ end }} · {{ printf "%02d:%02d" .Hour .Minute }}</li>
-  {{ end }}
-</ul>
-{{ end }}
+  <section class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between px-space-xs">
+      <h3 class="text-headline-md text-on-surface">Central de Lembretes</h3>
+    </div>
+    <div class="bg-surface-container-lowest rounded-3xl p-space-md shadow-sm flex flex-col gap-space-md">
+      {{ range .Reminders }}
+      <div class="flex items-center justify-between gap-space-md py-1">
+        <div class="flex flex-col">
+          <span class="text-label-lg text-on-surface">{{ if eq .Kind "pill" }}Pílula / Suplementos{{ else if eq .Kind "water" }}Hidratação &amp; Ovulação{{ else }}Alerta de Início do Ciclo{{ end }}</span>
+          <span class="text-body-sm text-on-surface-variant">{{ printf "%02d:%02d" .Hour .Minute }}{{ if not .Enabled }} · pausado{{ end }}</span>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant text-label-sm">neste aparelho</span>
+      </div>
+      {{ end }}
+      <.form action="/lembretes" method="post" class="space-y-3">
+        <.select name="kind" label="Tipo">
+          <option value="pill">Pílula</option>
+          <option value="water">Água</option>
+          <option value="period">Início da menstruação</option>
+        </.select>
+        <.input name="hour" type="number" label="Hora" value="8" min="0" max="23" />
+        <.input name="minute" type="number" label="Minuto" value="0" min="0" max="59" />
+        <.button type="submit">Salvar lembrete</.button>
+      </.form>
+      <p class="text-body-sm text-on-surface-variant">Eles aparecem na tela do ciclo neste aparelho. Notificação do sistema só se o navegador permitir.</p>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-space-sm">
+    <div class="flex items-center justify-between px-space-xs">
+      <h3 class="text-headline-md text-on-surface">Biblioteca Clínica</h3>
+      <span class="text-label-sm text-on-surface-variant">Revisão Médica</span>
+    </div>
+    <div class="flex flex-col gap-space-md">
+      {{ range .Articles }}
+      <a href="/apoio/{{ .Slug }}" class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm p-space-lg block">
+        <div class="h-24 rounded-2xl bg-gradient-to-br from-primary-fixed to-secondary-container/40 mb-3"></div>
+        <h4 class="text-headline-md text-on-surface leading-snug">{{ .Title }}</h4>
+        <p class="text-body-sm text-on-surface-variant mt-1">{{ .Summary }}</p>
+        <p class="mt-2 text-label-sm text-outline">{{ .ReviewedBy }}</p>
+      </a>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="bg-surface-container-low rounded-3xl p-space-md flex items-center gap-space-sm">
+    <span class="text-secondary">{{ template "icon_check" . }}</span>
+    <p class="text-body-sm text-on-surface-variant">
+      A <strong>Aura Ciclos</strong> não comercializa nem compartilha históricos médicos com terceiros ou redes de publicidade. SQLite no servidor, sem E2EE.
+    </p>
+  </section>
+</div>
 {{ end }}

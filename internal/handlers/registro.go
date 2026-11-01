@@ -35,21 +35,27 @@ func (h *TrackerHandler) Registro(w http.ResponseWriter, r *http.Request) {
 		selected[id] = true
 	}
 	h.page(w, r, "registro", map[string]any{
-		"Title":      "Registro",
-		"ActiveNav":  "registro",
-		"Name":       greetName(data.user, data.profile),
-		"Anonymous":  data.user.Anonymous || data.profile.Anonymous,
-		"Mode":       data.profile.Mode,
-		"ModeLabel":  cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
-		"Forecast":   data.fc,
-		"PhaseLabel": cycle.PhaseLabel(data.fc.Phase),
-		"Day":        day.Format(time.DateOnly),
-		"DayLabel":   formatDayPT(day),
-		"Log":        log,
-		"Groups":     symptoms.Grouped(),
-		"Selected":   selected,
-		"Trying":     data.profile.Mode == models.ModeTrying,
-		"BBTDisplay": formatBBT(log.BBTCelsius),
+		"Title":        "Registro",
+		"ActiveNav":    "registro",
+		"Name":         greetName(data.user, data.profile),
+		"Anonymous":    data.user.Anonymous || data.profile.Anonymous,
+		"Mode":         data.profile.Mode,
+		"ModeLabel":    cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
+		"Forecast":     data.fc,
+		"PhaseLabel":   cycle.PhaseLabel(data.fc.Phase),
+		"PhaseBadge":   cycle.Physiology(data.fc.Phase).Badge,
+		"Day":          day.Format(time.DateOnly),
+		"DayLabel":     formatDayPT(day, h.today()),
+		"Log":          log,
+		"Groups":       symptoms.Grouped(),
+		"Selected":     selected,
+		"Trying":       data.profile.Mode == models.ModeTrying,
+		"BBTDisplay":   formatBBT(log.BBTCelsius),
+		"Week":         weekStrip(day, data.fc, false),
+		"WaterLiters":  waterLiters(log.WaterGlasses),
+		"SleepLabel":   sleepLabel(log.SleepHours),
+		"SleepQuality": sleepQuality(log.SleepHours),
+		"CycleDay":     data.fc.CycleDay,
 	})
 }
 
@@ -114,7 +120,11 @@ func (h *TrackerHandler) RegistroPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/registro?dia="+day.Format(time.DateOnly), http.StatusSeeOther)
 }
 
-func formatDayPT(day time.Time) string {
+func formatDayPT(day, today time.Time) string {
 	meses := []string{"janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"}
-	return "Hoje, " + strconv.Itoa(day.Day()) + " de " + meses[day.Month()-1]
+	label := strconv.Itoa(day.Day()) + " de " + meses[day.Month()-1]
+	if sameUTCDay(day, today) {
+		return "Hoje, " + label
+	}
+	return label
 }

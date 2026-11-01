@@ -87,6 +87,12 @@ func (h *TrackerHandler) load(w http.ResponseWriter, r *http.Request) (loaded, b
 }
 
 func (h *TrackerHandler) page(w http.ResponseWriter, r *http.Request, name string, extra map[string]any) {
+	if extra != nil {
+		if _, ok := extra["AvatarLetter"]; !ok {
+			name, _ := extra["Name"].(string)
+			extra["AvatarLetter"] = avatarLetter(name)
+		}
+	}
 	writeView(w, r, h.views, h.cfg, "app", name, amarraData(r, h.site, extra), 0)
 }
 

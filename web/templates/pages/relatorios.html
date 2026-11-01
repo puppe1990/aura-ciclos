@@ -1,80 +1,213 @@
 {{ define "content" }}
-<div class="flex items-center justify-between">
-  <div>
-    <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Análises</p>
-    <h2 class="text-2xl font-bold tracking-tight">Relatórios</h2>
-  </div>
-  <span class="text-sm font-bold text-primary">{{ .RegularLabel }}</span>
-</div>
-
-<div class="mt-5 grid grid-cols-2 gap-3">
-  <div class="bg-surface-container-lowest rounded-3xl p-4">
-    <p class="text-[11px] text-outline">Ciclo médio</p>
-    <p class="text-2xl font-bold text-primary">{{ .Forecast.CycleLength }}d</p>
-  </div>
-  <div class="bg-surface-container-lowest rounded-3xl p-4">
-    <p class="text-[11px] text-outline">Variação</p>
-    <p class="text-2xl font-bold">{{ .StdDevLabel }}</p>
-  </div>
-  <div class="bg-surface-container-lowest rounded-3xl p-4">
-    <p class="text-[11px] text-outline">Fase folicular</p>
-    <p class="text-2xl font-bold">{{ .Forecast.FollicularDays }}d</p>
-  </div>
-  <div class="bg-surface-container-lowest rounded-3xl p-4">
-    <p class="text-[11px] text-outline">Fase lútea</p>
-    <p class="text-2xl font-bold">{{ .Forecast.LutealDays }}d</p>
-  </div>
-</div>
-
-{{ if .Lengths }}
-<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
-  <h3 class="font-bold mb-3">Duração dos últimos ciclos</h3>
-  <div class="space-y-2">
-    {{ range .Lengths }}
-    <div class="flex items-center gap-3">
-      <span class="w-10 text-sm font-semibold">{{ . }}d</span>
-      <div class="flex-1 h-3 rounded-full bg-surface-container-high overflow-hidden">
-        <div class="h-full bg-secondary rounded-full" style="width: {{ . }}%; max-width: 100%;"></div>
-      </div>
+<div class="flex flex-col space-y-6">
+  <section class="flex flex-col space-y-1 pt-2">
+    <div class="inline-flex items-center gap-1.5 self-start px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-label-sm">
+      {{ template "icon_spark" . }}
+      Personalização do Ritmo
     </div>
+    <h2 class="text-headline-lg-mobile text-on-surface tracking-tight">Modos &amp; Relatórios</h2>
+    <p class="text-body-sm text-on-surface-variant">Ajuste os algoritmos para o seu momento de vida e acesse relatórios clínicos de precisão.</p>
+  </section>
+
+  <section class="flex flex-col space-y-3">
+    <div class="flex items-center justify-between">
+      <span class="text-label-lg text-on-surface">Selecione seu Modo</span>
+      <span class="text-label-sm text-primary bg-primary-fixed px-2.5 py-0.5 rounded-full font-semibold">1 Ativo</span>
+    </div>
+
+    <article class="relative overflow-hidden rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm {{ if eq .Mode "cycle" }}ring-2 ring-primary/20{{ end }}">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">{{ template "icon_spa" . }}</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-headline-md text-on-surface">Acompanhar Ciclo</h3>
+            {{ if eq .Mode "cycle" }}<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary text-on-primary">ATIVO</span>{{ end }}
+          </div>
+          <p class="text-body-sm text-on-surface-variant mt-0.5">Previsões diárias, sintomas de TPM e ritmo biológico</p>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 flex flex-wrap gap-2 border-t border-surface-container">
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Menstruação</span>
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Alívio TPM</span>
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Autocuidado</span>
+      </div>
+      <.form action="/modo" method="post" class="mt-4">
+        <input type="hidden" name="mode" value="cycle" />
+        {{ if eq .Mode "cycle" }}
+        <.button type="submit">Modo Ativo no Perfil</.button>
+        {{ else }}
+        <.button type="submit">Alternar para este Modo</.button>
+        {{ end }}
+      </.form>
+    </article>
+
+    <article class="relative overflow-hidden rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm {{ if eq .Mode "trying" }}ring-2 ring-primary/20{{ end }}">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary flex-shrink-0">{{ template "icon_heart" . }}</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-headline-md text-on-surface">Crescer a Família</h3>
+            {{ if eq .Mode "trying" }}<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary text-on-primary">ATIVO</span>{{ end }}
+          </div>
+          <p class="text-body-sm text-on-surface-variant mt-0.5">Tentantes: janela fértil, LH e temperatura basal</p>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 flex flex-wrap gap-2 border-t border-surface-container">
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Termômetro Basal</span>
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Teste LH</span>
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Probabilidade</span>
+      </div>
+      <.form action="/modo" method="post" class="mt-4">
+        <input type="hidden" name="mode" value="trying" />
+        {{ if eq .Mode "trying" }}
+        <.button type="submit">Modo Ativo no Perfil</.button>
+        {{ else }}
+        <.button type="submit">Alternar para este Modo</.button>
+        {{ end }}
+      </.form>
+    </article>
+
+    <article class="relative overflow-hidden rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm {{ if eq .Mode "pregnancy" }}ring-2 ring-primary/20{{ end }}">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary flex-shrink-0">{{ template "icon_heart" . }}</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="text-headline-md text-on-surface">Acompanhar Gravidez</h3>
+            {{ if eq .Mode "pregnancy" }}<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary text-on-primary">ATIVO</span>{{ end }}
+          </div>
+          <p class="text-body-sm text-on-surface-variant mt-0.5">Semana a semana, marcos fetais e contagem regressiva</p>
+        </div>
+      </div>
+      <div class="mt-4 pt-3 flex flex-wrap gap-2 border-t border-surface-container">
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">Comparação com Fruta</span>
+        <span class="inline-flex items-center gap-1 text-label-sm px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant">DPA</span>
+      </div>
+      <.form action="/modo" method="post" class="mt-4 space-y-3">
+        <input type="hidden" name="mode" value="pregnancy" />
+        <.input name="pregnancy_lmp" type="date" label="Data da última menstruação" value="{{ .LMP }}" />
+        {{ if eq .Mode "pregnancy" }}
+        <.button type="submit">Modo Ativo no Perfil</.button>
+        {{ else }}
+        <.button type="submit">Alternar para este Modo</.button>
+        {{ end }}
+      </.form>
+    </article>
+  </section>
+
+  {{ if .Pregnant }}
+  <section class="rounded-3xl bg-surface-container-low p-space-md flex items-center gap-4">
+    <div class="w-16 h-16 rounded-full bg-surface-container-lowest flex-shrink-0 flex items-center justify-center shadow-sm text-primary">{{ template "icon_spa" . }}</div>
+    <div class="flex-1 min-w-0">
+      <span class="text-label-sm text-tertiary uppercase tracking-wider">Preview Gestacional</span>
+      <h4 class="text-headline-md text-on-surface truncate">Semana {{ .Forecast.PregnancyWeek }}: Tamanho de um {{ .PregnancySize }}</h4>
+      <p class="text-body-sm text-on-surface-variant">{{ .PregnancyNote }}</p>
+    </div>
+  </section>
+  {{ else }}
+  <section class="rounded-3xl bg-surface-container-low p-space-md flex items-center gap-4">
+    <div class="w-16 h-16 rounded-full bg-surface-container-lowest flex-shrink-0 flex items-center justify-center shadow-sm text-primary">{{ template "icon_spa" . }}</div>
+    <div class="flex-1 min-w-0">
+      <span class="text-label-sm text-tertiary uppercase tracking-wider">Preview Gestacional</span>
+      <h4 class="text-headline-md text-on-surface">Semana a semana quando você ativar o modo gravidez</h4>
+      <p class="text-body-sm text-on-surface-variant">A comparação com frutas só aparece com a data da última menstruação.</p>
+    </div>
+  </section>
+  {{ end }}
+
+  <section class="flex flex-col space-y-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-primary">{{ template "icon_chart" . }}</span>
+        <h2 class="text-headline-lg-mobile text-on-surface">Relatórios Clínicos</h2>
+      </div>
+      <span class="text-label-sm px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed">Últimos {{ len .Lengths }} Ciclos</span>
+    </div>
+
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-headline-md text-on-surface">Regularidade dos Ciclos</h3>
+          <p class="text-body-sm text-on-surface-variant">Média biométrica de {{ .MeanLength }} (± {{ .StdDevLabel }})</p>
+        </div>
+        <div class="text-right">
+          <span class="text-headline-lg-mobile text-primary font-bold">{{ .Forecast.ConfidencePct }}%</span>
+          <span class="block text-label-sm text-on-surface-variant">{{ .RegularLabel }}</span>
+        </div>
+      </div>
+      {{ if .LengthBars }}
+      <div class="w-full pt-2">
+        <svg class="w-full h-32 overflow-visible" viewBox="0 0 320 120">
+          <line stroke="#e0bfba" stroke-dasharray="3 3" stroke-width="1" x1="20" x2="300" y1="45" y2="45"></line>
+          {{ range .LengthBars }}
+          <g>
+            <rect fill="{{ .Fill }}" opacity="{{ .Opacity }}" height="{{ .Height }}" rx="11" width="22" x="{{ .X }}" y="{{ .BarY }}"></rect>
+            <text fill="#58413d" font-size="10" font-weight="600" text-anchor="middle" x="{{ .LabelX }}" y="118">{{ .Label }}</text>
+            <text fill="#1c1b1a" font-size="10" text-anchor="middle" x="{{ .LabelX }}" y="{{ .ValueY }}">{{ .Days }}d</text>
+          </g>
+          {{ end }}
+        </svg>
+      </div>
+      {{ end }}
+    </article>
+
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-4">
+      <div>
+        <h3 class="text-headline-md text-on-surface">Fases Hormonais Típicas</h3>
+        <p class="text-body-sm text-on-surface-variant">Duração observada no último ciclo de {{ .Forecast.CycleLength }} dias</p>
+      </div>
+      <div class="w-full h-3.5 rounded-full bg-surface-container overflow-hidden flex">
+        <div class="h-full bg-primary" style="width: {{ printf "%.1f" .FollicularPct }}%;"></div>
+        <div class="h-full bg-tertiary-container" style="width: {{ printf "%.1f" .OvulatoryPct }}%;"></div>
+        <div class="h-full bg-secondary" style="width: {{ printf "%.1f" .LutealPct }}%;"></div>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <div class="flex flex-col p-2.5 rounded-2xl bg-surface-container-low">
+          <span class="text-label-sm text-primary">Folicular</span>
+          <span class="text-headline-md text-on-surface mt-1">{{ .FollicularDays }} <span class="text-body-sm text-on-surface-variant">dias</span></span>
+          <span class="text-label-sm text-on-surface-variant mt-0.5">Estrogênio Alto</span>
+        </div>
+        <div class="flex flex-col p-2.5 rounded-2xl bg-surface-container-low">
+          <span class="text-label-sm text-tertiary">Ovulatória</span>
+          <span class="text-headline-md text-on-surface mt-1">{{ .OvulatoryDays }} <span class="text-body-sm text-on-surface-variant">dias</span></span>
+          <span class="text-label-sm text-on-surface-variant mt-0.5">Pico de LH</span>
+        </div>
+        <div class="flex flex-col p-2.5 rounded-2xl bg-surface-container-low">
+          <span class="text-label-sm text-secondary">Lútea</span>
+          <span class="text-headline-md text-on-surface mt-1">{{ .LutealDays }} <span class="text-body-sm text-on-surface-variant">dias</span></span>
+          <span class="text-label-sm text-on-surface-variant mt-0.5">Progesterona</span>
+        </div>
+      </div>
+    </article>
+
+    {{ if .TopSymptoms }}
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm">
+      <h3 class="text-headline-md font-bold mb-3">Sintomas mais registrados</h3>
+      <ul class="space-y-2">
+        {{ range .TopSymptoms }}
+        <li class="flex items-center justify-between text-body-sm"><span>{{ .Label }}</span><span class="font-bold text-primary">{{ .Count }}</span></li>
+        {{ end }}
+      </ul>
+    </article>
     {{ end }}
-  </div>
-</section>
-{{ end }}
 
-{{ if .TopSymptoms }}
-<section class="mt-5 bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
-  <h3 class="font-bold mb-3">Sintomas mais registrados</h3>
-  <ul class="space-y-2">
-    {{ range .TopSymptoms }}
-    <li class="flex items-center justify-between text-sm"><span>{{ .Label }}</span><span class="font-bold text-primary">{{ .Count }}</span></li>
-    {{ end }}
-  </ul>
-</section>
-{{ end }}
-
-{{ if .Pregnant }}
-<section class="mt-5 bg-primary-fixed rounded-3xl p-5">
-  <h3 class="font-bold">Gravidez · semana {{ .Forecast.PregnancyWeek }}</h3>
-  <p class="mt-2 text-sm leading-relaxed">{{ .PregnancyNote }}</p>
-</section>
-{{ end }}
-
-<.form action="/modo" method="post" class="mt-5 bg-surface-container-low rounded-3xl p-5 space-y-3">
-  <h3 class="font-bold">Modo de uso</h3>
-  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
-    <input type="radio" name="mode" value="cycle" {{ if eq .Mode "cycle" }}checked{{ end }} />
-    <span><span class="block font-semibold">Acompanhar ciclo</span><span class="text-sm text-on-surface-variant">Previsão da menstruação e TPM.</span></span>
-  </label>
-  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
-    <input type="radio" name="mode" value="trying" {{ if eq .Mode "trying" }}checked{{ end }} />
-    <span><span class="block font-semibold">Crescer a família</span><span class="text-sm text-on-surface-variant">Destaque para o pico fértil, testes e temperatura basal.</span></span>
-  </label>
-  <label class="flex items-start gap-3 rounded-2xl bg-surface-container-lowest p-3">
-    <input type="radio" name="mode" value="pregnancy" {{ if eq .Mode "pregnancy" }}checked{{ end }} />
-    <span><span class="block font-semibold">Acompanhar gravidez</span><span class="text-sm text-on-surface-variant">Semana a semana a partir da última menstruação.</span></span>
-  </label>
-  <.input name="pregnancy_lmp" type="date" label="Data da última menstruação" value="{{ .LMP }}" />
-  <.button type="submit">Atualizar modo</.button>
-</.form>
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-4">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed flex-shrink-0">{{ template "icon_lock" . }}</div>
+        <div class="flex-1">
+          <h4 class="text-headline-md text-on-surface">Consulta Médica Facilitada</h4>
+          <p class="text-body-sm text-on-surface-variant mt-0.5">
+            Gere um prontuário com histórico de fluxo, cólicas e temperatura para levar ao ginecologista. Os dados ficam em SQLite no servidor, protegidos por sessão — sem criptografia ponta a ponta.
+          </p>
+        </div>
+      </div>
+      <div class="p-3 rounded-2xl bg-surface-container-low flex items-center justify-between text-on-surface-variant text-label-sm">
+        <span class="flex items-center gap-1.5">{{ template "icon_lock" . }} Sessão e senha</span>
+        <span class="font-semibold text-primary">LGPD em Saúde</span>
+      </div>
+      <button type="button" class="w-full h-12 rounded-full bg-primary text-on-primary text-label-lg flex items-center justify-center gap-2.5 shadow-md" data-aura-print>
+        Imprimir relatório clínico
+      </button>
+    </article>
+  </section>
+</div>
 {{ end }}

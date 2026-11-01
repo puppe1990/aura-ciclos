@@ -1,69 +1,228 @@
 {{ define "content" }}
-<div class="flex items-center justify-between">
-  <div>
-    <p class="text-[11px] font-bold uppercase tracking-wider text-outline">Diário</p>
-    <h2 class="text-2xl font-bold tracking-tight">{{ .DayLabel }}</h2>
-  </div>
-  <span class="text-sm font-semibold text-primary">{{ .PhaseLabel }}</span>
-</div>
-
-<.form action="/registro" method="post" class="mt-5 space-y-5">
-  <input type="hidden" name="logged_on" value="{{ .Day }}" />
-
-  {{ range .Groups }}
-  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm">
-    <h3 class="font-bold mb-3">{{ .Label }}</h3>
-    <div class="flex flex-wrap gap-2">
-      {{ range .Items }}
-      <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm cursor-pointer bg-surface-container-low text-on-surface has-[:checked]:bg-primary has-[:checked]:text-on-primary">
-        <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
-        {{ .Label }}
-      </label>
+<div class="flex flex-col space-y-space-md">
+  <div class="flex flex-col bg-surface-container-lowest rounded-3xl p-space-md shadow-sm">
+    <div class="flex items-center justify-between mb-space-sm">
+      <div class="flex items-center gap-space-xs">
+        <span class="text-primary">{{ template "icon_log" . }}</span>
+        <span class="text-headline-md text-on-surface">{{ .DayLabel }}</span>
+      </div>
+      <span class="text-label-sm uppercase px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold tracking-wide">{{ .PhaseBadge }} · Dia {{ .CycleDay }}</span>
+    </div>
+    <div class="flex items-center justify-between gap-1 overflow-x-auto py-1 no-scrollbar">
+      {{ range .Week }}
+      <a href="/registro?dia={{ .Date }}" class="flex flex-col items-center justify-center min-w-[42px] py-2 px-1 rounded-full {{ if .Today }}bg-primary text-on-primary shadow-md scale-105 min-w-[46px] py-2.5{{ else }}bg-surface-container text-on-surface-variant{{ end }}">
+        <span class="text-label-sm opacity-70">{{ .Weekday }}</span>
+        <span class="{{ if .Today }}text-headline-md leading-none font-bold{{ else }}text-label-lg{{ end }}">{{ .Day }}</span>
+      </a>
       {{ end }}
     </div>
-  </section>
-  {{ end }}
+  </div>
 
-  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
-    <h3 class="font-bold">Humor, energia e estilo de vida</h3>
-    <.select name="mood" label="Humor">
-      <option value="">—</option>
-      <option value="ansiedade" {{ if eq .Log.Mood "ansiedade" }}selected{{ end }}>Ansiedade</option>
-      <option value="felicidade" {{ if eq .Log.Mood "felicidade" }}selected{{ end }}>Felicidade</option>
-      <option value="irritabilidade" {{ if eq .Log.Mood "irritabilidade" }}selected{{ end }}>Irritabilidade</option>
-      <option value="tristeza" {{ if eq .Log.Mood "tristeza" }}selected{{ end }}>Tristeza</option>
-      <option value="calma" {{ if eq .Log.Mood "calma" }}selected{{ end }}>Calma</option>
-    </.select>
-    <.input name="energy" type="number" label="Energia (1–5)" value="{{ .Log.Energy }}" min="0" max="5" />
-    <.input name="sleep_hours" type="text" label="Horas de sono" value="{{ .Log.SleepHours }}" />
-    <.input name="water_glasses" type="number" label="Copos de água" value="{{ .Log.WaterGlasses }}" min="0" />
-    <.input name="exercise_minutes" type="number" label="Minutos de exercício" value="{{ .Log.ExerciseMinutes }}" min="0" />
-    <.select name="sex" label="Relação sexual">
-      <option value="">—</option>
-      <option value="protegida" {{ if eq .Log.Sex "protegida" }}selected{{ end }}>Com proteção</option>
-      <option value="desprotegida" {{ if eq .Log.Sex "desprotegida" }}selected{{ end }}>Sem proteção</option>
-      <option value="nao" {{ if eq .Log.Sex "nao" }}selected{{ end }}>Não</option>
-    </.select>
-  </section>
+  <div class="relative overflow-hidden bg-surface-container-lowest rounded-3xl p-space-md shadow-sm flex items-center gap-space-md">
+    <div class="w-16 h-16 rounded-full flex-shrink-0 bg-primary-fixed flex items-center justify-center text-primary">{{ template "icon_spa" . }}</div>
+    <div class="flex flex-col min-w-0">
+      <span class="text-label-sm uppercase tracking-wider text-primary font-bold">Bio-Ritmo &amp; Conforto</span>
+      <p class="text-body-sm text-on-surface-variant mt-0.5">Seus registros refinam as previsões hormonais. Os dados ficam em SQLite no servidor.</p>
+    </div>
+  </div>
 
-  {{ if .Trying }}
-  <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
-    <h3 class="font-bold">Crescer a família</h3>
-    <.input name="bbt_celsius" type="text" label="Temperatura basal (°C)" value="{{ .BBTDisplay }}" />
-    <.select name="ovulation_test" label="Teste de ovulação">
-      <option value="">—</option>
-      <option value="positivo" {{ if eq .Log.OvulationTest "positivo" }}selected{{ end }}>Positivo</option>
-      <option value="negativo" {{ if eq .Log.OvulationTest "negativo" }}selected{{ end }}>Negativo</option>
-    </.select>
-    <.select name="pregnancy_test" label="Teste de gravidez">
-      <option value="">—</option>
-      <option value="positivo" {{ if eq .Log.PregnancyTest "positivo" }}selected{{ end }}>Positivo</option>
-      <option value="negativo" {{ if eq .Log.PregnancyTest "negativo" }}selected{{ end }}>Negativo</option>
-    </.select>
-  </section>
-  {{ end }}
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+    <a href="#section-fluxo" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-primary text-on-primary shadow-sm">Fluxo</a>
+    <a href="#section-fisicos" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Sintomas Físicos</a>
+    <a href="#section-humor" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Humor &amp; Energia</a>
+    <a href="#section-estilo" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Estilo de Vida</a>
+  </div>
 
-  <.input name="notes" type="text" label="Notas" value="{{ .Log.Notes }}" />
-  <.button type="submit">Salvar registro</.button>
-</.form>
+  <.form action="/registro" method="post" class="space-y-space-md">
+    <input type="hidden" name="logged_on" value="{{ .Day }}" />
+
+    {{ range .Groups }}
+    {{ if eq .Category "fluxo" }}
+    <section id="section-fluxo" class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm space-y-space-md">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-space-xs">
+          <span class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary">{{ template "icon_drop" $ }}</span>
+          <h2 class="text-headline-md text-on-surface">Fluxo Menstrual</h2>
+        </div>
+        <span class="text-label-sm text-on-surface-variant">Selecione um</span>
+      </div>
+      <div class="grid grid-cols-2 gap-space-xs sm:grid-cols-5">
+        {{ range .Items }}
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[72px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+          <span class="text-label-md">{{ .Label }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </section>
+    {{ else if eq .Category "fisicos" }}
+    <section id="section-fisicos" class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm space-y-space-md">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-space-xs">
+          <span class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">{{ template "icon_heart" $ }}</span>
+          <h2 class="text-headline-md text-on-surface">Sintomas Físicos</h2>
+        </div>
+        <span class="text-label-sm text-primary font-bold">Mais de 70 disponíveis</span>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {{ range .Items }}
+        <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-label-md cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+          <span>{{ .Label }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </section>
+    {{ else if eq .Category "humor" }}
+    <section id="section-humor" class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm space-y-space-md">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-space-xs">
+          <span class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-fixed">{{ template "icon_spark" $ }}</span>
+          <h2 class="text-headline-md text-on-surface">Humor &amp; Energia</h2>
+        </div>
+        <span class="text-label-sm text-on-surface-variant">Como se sente?</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2">
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="felicidade" class="sr-only" {{ if eq $.Log.Mood "felicidade" }}checked{{ end }} />
+          <span class="text-xl mb-1">✨</span><span class="text-label-md">Feliz</span>
+        </label>
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="ansiedade" class="sr-only" {{ if eq $.Log.Mood "ansiedade" }}checked{{ end }} />
+          <span class="text-xl mb-1">🌊</span><span class="text-label-md">Ansiosa</span>
+        </label>
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="irritabilidade" class="sr-only" {{ if eq $.Log.Mood "irritabilidade" }}checked{{ end }} />
+          <span class="text-xl mb-1">⚡</span><span class="text-label-md">Irritada</span>
+        </label>
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="calma" class="sr-only" {{ if eq $.Log.Mood "calma" }}checked{{ end }} />
+          <span class="text-xl mb-1">🍃</span><span class="text-label-md">Calma</span>
+        </label>
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="sensibilidade_emocional" class="sr-only" {{ if eq $.Log.Mood "sensibilidade_emocional" }}checked{{ end }} />
+          <span class="text-xl mb-1">🌸</span><span class="text-label-md">Sensível</span>
+        </label>
+        <label class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low text-on-surface-variant min-h-[68px] cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+          <input type="radio" name="mood" value="fadiga" class="sr-only" {{ if eq $.Log.Mood "fadiga" }}checked{{ end }} />
+          <span class="text-xl mb-1">☁️</span><span class="text-label-md">Cansada</span>
+        </label>
+      </div>
+      <div class="space-y-2 pt-2">
+        <div class="flex items-center justify-between">
+          <span class="text-label-md text-on-surface-variant">Bateria Corporal</span>
+          <span class="text-label-sm text-primary font-bold">{{ if eq $.Log.Energy 5 }}Alta{{ else if eq $.Log.Energy 3 }}Média{{ else if eq $.Log.Energy 2 }}Baixa{{ else if eq $.Log.Energy 1 }}Esgotada{{ else }}Opcional{{ end }}</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2">
+          <label class="flex flex-col items-center p-2.5 rounded-2xl bg-surface-container-low text-on-surface-variant cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+            <input type="radio" name="energy" value="5" class="sr-only" {{ if eq $.Log.Energy 5 }}checked{{ end }} />
+            <span class="text-label-sm">Alta</span>
+          </label>
+          <label class="flex flex-col items-center p-2.5 rounded-2xl bg-surface-container-low text-on-surface-variant cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+            <input type="radio" name="energy" value="3" class="sr-only" {{ if or (eq $.Log.Energy 3) (eq $.Log.Energy 4) }}checked{{ end }} />
+            <span class="text-label-sm">Média</span>
+          </label>
+          <label class="flex flex-col items-center p-2.5 rounded-2xl bg-surface-container-low text-on-surface-variant cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+            <input type="radio" name="energy" value="2" class="sr-only" {{ if eq $.Log.Energy 2 }}checked{{ end }} />
+            <span class="text-label-sm">Baixa</span>
+          </label>
+          <label class="flex flex-col items-center p-2.5 rounded-2xl bg-surface-container-low text-on-surface-variant cursor-pointer has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:shadow-sm">
+            <input type="radio" name="energy" value="1" class="sr-only" {{ if eq $.Log.Energy 1 }}checked{{ end }} />
+            <span class="text-label-sm">Esgotada</span>
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2 pt-2">
+        {{ range .Items }}
+        <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-label-md cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary">
+          <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+          <span>{{ .Label }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </section>
+    {{ else if eq .Category "estilo" }}
+    <section id="section-estilo" class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm space-y-space-md">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-space-xs">
+          <span class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">{{ template "icon_spa" $ }}</span>
+          <h2 class="text-headline-md text-on-surface">Estilo de Vida</h2>
+        </div>
+        <span class="text-label-sm text-on-surface-variant">Hábitos diários</span>
+      </div>
+      <div class="bg-surface-container-low rounded-2xl p-space-md flex items-center justify-between">
+        <div>
+          <span class="text-label-md text-on-surface block">Ingestão de Água</span>
+          <span class="text-headline-md text-primary font-bold" id="waterDisplay">{{ $.WaterLiters }}L <span class="text-body-sm text-on-surface-variant font-normal">/ 2,5L</span></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" class="w-10 h-10 rounded-full bg-surface-container-lowest text-on-surface flex items-center justify-center shadow-sm" data-aura-water="-1" aria-label="Diminuir água">−</button>
+          <button type="button" class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm" data-aura-water="1" aria-label="Aumentar água">+</button>
+        </div>
+      </div>
+      <input type="hidden" name="water_glasses" id="waterGlasses" value="{{ $.Log.WaterGlasses }}" />
+      <.input name="sleep_hours" type="text" label="Sono da noite (horas)" value="{{ $.Log.SleepHours }}" />
+      {{ if $.SleepQuality }}<p class="text-label-sm text-on-surface-variant">Qualidade: {{ $.SleepQuality }} · {{ $.SleepLabel }}</p>{{ end }}
+      <div class="space-y-2">
+        <span class="text-label-md text-on-surface-variant">Relações Sexuais</span>
+        <div class="grid grid-cols-3 gap-2">
+          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
+            <input type="radio" name="sex" value="protegida" class="sr-only" {{ if eq $.Log.Sex "protegida" }}checked{{ end }} />
+            Com proteção
+          </label>
+          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
+            <input type="radio" name="sex" value="desprotegida" class="sr-only" {{ if eq $.Log.Sex "desprotegida" }}checked{{ end }} />
+            Desprotegida
+          </label>
+          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
+            <input type="radio" name="sex" value="nao" class="sr-only" {{ if eq $.Log.Sex "nao" }}checked{{ end }} />
+            Não
+          </label>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        {{ range .Items }}
+        <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-label-sm cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary">
+          <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+          <span>{{ .Label }}</span>
+        </label>
+        {{ end }}
+      </div>
+    </section>
+    {{ else }}
+    <section class="bg-surface-container-lowest rounded-3xl p-space-lg shadow-sm space-y-3">
+      <h3 class="text-headline-md">{{ .Label }}</h3>
+      <div class="flex flex-wrap gap-2">
+        {{ range .Items }}
+        <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-label-md cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary">
+          <input type="checkbox" name="symptoms" value="{{ .ID }}" class="sr-only" {{ if index $.Selected .ID }}checked{{ end }} />
+          {{ .Label }}
+        </label>
+        {{ end }}
+      </div>
+    </section>
+    {{ end }}
+    {{ end }}
+
+    {{ if .Trying }}
+    <section class="bg-surface-container-lowest rounded-3xl p-5 shadow-sm space-y-3">
+      <h3 class="text-headline-md font-bold">Crescer a família</h3>
+      <.input name="bbt_celsius" type="text" label="Temperatura basal (°C)" value="{{ .BBTDisplay }}" />
+      <.select name="ovulation_test" label="Teste de ovulação">
+        <option value="">—</option>
+        <option value="positivo" {{ if eq .Log.OvulationTest "positivo" }}selected{{ end }}>Positivo</option>
+        <option value="negativo" {{ if eq .Log.OvulationTest "negativo" }}selected{{ end }}>Negativo</option>
+      </.select>
+      <.select name="pregnancy_test" label="Teste de gravidez">
+        <option value="">—</option>
+        <option value="positivo" {{ if eq .Log.PregnancyTest "positivo" }}selected{{ end }}>Positivo</option>
+        <option value="negativo" {{ if eq .Log.PregnancyTest "negativo" }}selected{{ end }}>Negativo</option>
+      </.select>
+    </section>
+    {{ end }}
+
+    <.input name="notes" type="text" label="Notas" value="{{ .Log.Notes }}" />
+    <.button type="submit">Salvar Registro do Dia</.button>
+  </.form>
+</div>
 {{ end }}

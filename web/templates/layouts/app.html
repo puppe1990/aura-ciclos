@@ -16,6 +16,42 @@
 {{- define "icon_maya" -}}
 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3a7 7 0 017 7c0 3.2-1.8 5.2-3.5 6.7-.6.5-1 1.2-1 2v.3H9.5V19c0-.8-.4-1.5-1-2C6.8 15.2 5 13.2 5 10a7 7 0 017-7zM9 21h6"/></svg>
 {{- end -}}
+{{- define "icon_shield" -}}
+<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l8 3v6c0 5.2-3.4 9.8-8 11-4.6-1.2-8-5.8-8-11V5l8-3z"/></svg>
+{{- end -}}
+{{- define "icon_spark" -}}
+<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6L12 2z"/></svg>
+{{- end -}}
+{{- define "icon_spa" -}}
+<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3c4 4.5 6 8 6 11a6 6 0 11-12 0c0-3 2-6.5 6-11z"/></svg>
+{{- end -}}
+{{- define "icon_heart" -}}
+<svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7-4.4-9.5-8.2C.6 9.8 2.2 6 6 6c2 0 3.4 1 4 2 .6-1 2-2 4-2 3.8 0 5.4 3.8 3.5 6.8C19 16.6 12 21 12 21z"/></svg>
+{{- end -}}
+{{- define "icon_bolt" -}}
+<svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 10-14h-7l0-6z"/></svg>
+{{- end -}}
+{{- define "icon_flask" -}}
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 3h6M10 3v6L5 20h14L14 9V3"/></svg>
+{{- end -}}
+{{- define "icon_thermo" -}}
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 3a2 2 0 00-2 2v8.5a4 4 0 104 0V5a2 2 0 00-2-2z"/></svg>
+{{- end -}}
+{{- define "icon_brain" -}}
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 4a3 3 0 00-3 3v.5A3 3 0 004 10c0 1.5.8 2.4 2 3v4a3 3 0 003 3h6a3 3 0 003-3v-4c1.2-.6 2-1.5 2-3a3 3 0 00-2-2.5V7a3 3 0 00-3-3c-.8 0-1.5.3-2 .8A3 3 0 009 4z"/></svg>
+{{- end -}}
+{{- define "icon_lock" -}}
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7 11V8a5 5 0 0110 0v3M6 11h12v10H6V11z"/></svg>
+{{- end -}}
+{{- define "icon_plus" -}}
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14M5 12h14"/></svg>
+{{- end -}}
+{{- define "icon_check" -}}
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12l5 5L20 7"/></svg>
+{{- end -}}
+{{- define "icon_arrow" -}}
+<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M13 6l6 6-6 6"/></svg>
+{{- end -}}
 {{ define "app" }}
 <!doctype html>
 <html lang="{{ htmlLang }}" class="light" data-amarra-layout="app">
@@ -39,6 +75,7 @@
     <meta property="og:locale" content="{{ ogLocale }}" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="/static/js/aura.js" defer></script>
     <link rel="manifest" href="/static/manifest.webmanifest" />
     <meta name="theme-color" content="#fdf9f6" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -53,60 +90,62 @@
     <div id="amarra-toast-host" aria-live="polite"></div>
     <main id="amarra-main" class="flex-grow {{ if .Site.LoggedIn }}pb-24{{ end }}">
       {{ if .Site.LoggedIn }}
-      <header class="sticky top-0 z-40 pt-safe bg-ink/90 backdrop-blur-xl border-b border-outline-variant/40">
-        <div class="mx-auto max-w-lg px-4 h-16 flex items-center justify-between gap-3">
-          <a href="/ciclo" class="flex items-center gap-2 min-w-0">
-            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary">{{ template "icon_drop" . }}</span>
+      <header class="sticky top-0 z-40 pt-safe bg-ink/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+        <div class="mx-auto max-w-lg px-margin-mobile h-16 flex items-center justify-between gap-space-sm">
+          <a href="/ciclo" class="flex items-center gap-space-sm min-w-0">
+            <img src="/static/favicon.svg" alt="" class="h-8 w-8 rounded-full object-contain flex-shrink-0" />
             <span class="min-w-0">
-              <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Aura Ciclos</span>
-              <span class="block truncate text-lg font-semibold leading-tight">{{ if .Title }}{{ .Title }}{{ else }}Ciclo{{ end }}</span>
+              <span class="block text-label-sm uppercase tracking-wider text-primary">Aura Ciclos</span>
+              <span class="block truncate text-headline-md leading-tight text-on-surface">{{ if .Title }}{{ .Title }}{{ else }}Ciclo{{ end }}</span>
             </span>
           </a>
-          <div class="flex items-center gap-2 flex-shrink-0">
-            {{ if .ModeLabel }}<span class="hidden sm:inline-flex items-center px-3 py-1 rounded-full bg-surface-container text-on-surface-variant text-[11px] font-semibold">{{ .ModeLabel }}</span>{{ end }}
-            {{ if .Anonymous }}<span class="inline-flex items-center px-2 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-[11px] font-bold">Anônimo</span>{{ end }}
+          <div class="flex items-center gap-space-sm flex-shrink-0">
+            {{ if .ModeLabel }}<span class="hidden sm:inline-flex items-center gap-1.5 py-1 px-3 rounded-full bg-surface-container text-on-surface-variant text-label-sm"><span class="w-2 h-2 rounded-full bg-primary"></span>{{ .ModeLabel }}</span>{{ end }}
+            {{ if .Anonymous }}
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-sm min-h-[44px]">{{ template "icon_shield" . }}<span class="hidden xs:inline">Anônimo</span></span>
+            {{ end }}
             <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container" amarra-hook="theme" aria-pressed="false" data-amarra-theme-color="#fdf9f6" data-amarra-theme-color-off="#1c1b1a" data-amarra-theme-on-label="{{ t "layout.theme_dark" }}" data-amarra-theme-off-label="{{ t "layout.theme_light" }}">
               <span class="[html.light_&]:hidden">{{ template "icon_sun" . }}</span>
               <span class="hidden [html.light_&]:block">{{ template "icon_moon" . }}</span>
             </button>
-            <a href="/settings" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container" aria-label="{{ t "settings.title" }}">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15.5a3.5 3.5 0 100-7 3.5 3.5 0 000 7z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.4 15a7.7 7.7 0 00.1-1 7.7 7.7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7.4 7.4 0 00-1.7-1L13 3h-2l-.3 2.5a7.4 7.4 0 00-1.7 1l-2.4-1-2 3.5 2 1.5a7.7 7.7 0 00-.1 1 7.7 7.7 0 00.1 1l-2 1.5 2 3.5 2.4-1a7.4 7.4 0 001.7 1L11 21h2l.3-2.5a7.4 7.4 0 001.7-1l2.4 1 2-3.5-2-1.5z"/></svg>
+            <a href="/settings" class="relative rounded-full focus:outline-none focus:ring-2 focus:ring-primary min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="{{ t "settings.title" }}">
+              <span class="w-8 h-8 rounded-full bg-primary text-on-primary text-label-md font-bold flex items-center justify-center ring-2 ring-primary/20">{{ if .AvatarLetter }}{{ .AvatarLetter }}{{ else }}A{{ end }}</span>
             </a>
           </div>
         </div>
       </header>
       {{ else }}
-      <header class="sticky top-0 z-40 pt-safe bg-ink/90 backdrop-blur-xl border-b border-outline-variant/40">
-        <div class="mx-auto max-w-3xl px-4 h-16 flex items-center justify-between gap-3">
-          <a href="/" class="flex items-center gap-2">
-            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-on-primary">{{ template "icon_drop" . }}</span>
+      <header class="sticky top-0 z-40 pt-safe bg-ink/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.03)]">
+        <div class="mx-auto max-w-lg px-margin-mobile h-16 flex items-center justify-between gap-space-sm">
+          <a href="/" class="flex items-center gap-space-sm">
+            <img src="/static/favicon.svg" alt="" class="h-8 w-8 rounded-full object-contain flex-shrink-0" />
             <span>
-              <span class="block text-[11px] font-bold uppercase tracking-[0.18em] text-primary">Aura Ciclos</span>
-              <span class="block text-sm text-on-surface-variant">{{ t "brand.tagline" }}</span>
+              <span class="block text-label-sm uppercase tracking-wider text-primary">Aura Ciclos</span>
+              <span class="block text-body-sm text-on-surface-variant">{{ t "brand.tagline" }}</span>
             </span>
           </a>
           <div class="flex items-center gap-3">
             <.locale-toggle current="{{ .Locale }}" />
-            <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-copper hover:bg-surface-container" amarra-hook="theme" aria-pressed="false" data-amarra-theme-color="#fdf9f6" data-amarra-theme-color-off="#1c1b1a" data-amarra-theme-on-label="{{ t "layout.theme_dark" }}" data-amarra-theme-off-label="{{ t "layout.theme_light" }}">
+            <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container" amarra-hook="theme" aria-pressed="false" data-amarra-theme-color="#fdf9f6" data-amarra-theme-color-off="#1c1b1a" data-amarra-theme-on-label="{{ t "layout.theme_dark" }}" data-amarra-theme-off-label="{{ t "layout.theme_light" }}">
               <span class="[html.light_&]:hidden">{{ template "icon_sun" . }}</span>
               <span class="hidden [html.light_&]:block">{{ template "icon_moon" . }}</span>
             </button>
-            <a href="/login" class="text-sm font-semibold text-primary">{{ t "auth.login_title" }}</a>
+            <a href="/login" class="text-label-lg text-primary">{{ t "auth.login_title" }}</a>
           </div>
         </div>
       </header>
       {{ end }}
       <.flash />
       {{ if .Site.LoggedIn }}
-      <div class="mx-auto w-full max-w-lg px-4 py-5">
+      <div class="mx-auto w-full max-w-lg px-margin-mobile py-5">
         {{ template "content" . }}
       </div>
-      <nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-ink/92 backdrop-blur-xl border-t border-outline-variant/50" amarra-hook="nav" data-amarra-nav-on="text-primary font-bold" data-amarra-nav-off="text-on-surface-variant">
-        <div class="mx-auto max-w-lg flex justify-around items-center h-16 px-2">
-          <a href="/ciclo" class="flex flex-col items-center justify-center gap-0.5 flex-1 h-full min-w-[44px] min-h-[44px] text-[11px] {{ if eq .ActiveNav "ciclo" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_drop" . }}{{ t "nav.ciclo" }}</a>
-          <a href="/registro" class="flex flex-col items-center justify-center gap-0.5 flex-1 h-full min-w-[44px] min-h-[44px] text-[11px] {{ if eq .ActiveNav "registro" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_log" . }}{{ t "nav.registro" }}</a>
-          <a href="/relatorios" class="flex flex-col items-center justify-center gap-0.5 flex-1 h-full min-w-[44px] min-h-[44px] text-[11px] {{ if eq .ActiveNav "relatorios" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_chart" . }}{{ t "nav.relatorios" }}</a>
-          <a href="/apoio" class="flex flex-col items-center justify-center gap-0.5 flex-1 h-full min-w-[44px] min-h-[44px] text-[11px] {{ if eq .ActiveNav "apoio" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_maya" . }}{{ t "nav.apoio" }}</a>
+      <nav class="fixed bottom-0 inset-x-0 z-50 pb-safe bg-ink/90 backdrop-blur-xl shadow-[0_-2px_12px_rgba(92,57,65,0.04)]" amarra-hook="nav" data-amarra-nav-on="text-primary font-bold" data-amarra-nav-off="text-on-surface-variant">
+        <div class="mx-auto max-w-lg flex justify-around items-center h-16 px-space-xs">
+          <a href="/ciclo" class="flex flex-col items-center justify-center gap-1 flex-1 h-full min-w-[44px] min-h-[44px] text-label-sm {{ if eq .ActiveNav "ciclo" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_drop" . }}{{ t "nav.ciclo" }}</a>
+          <a href="/registro" class="flex flex-col items-center justify-center gap-1 flex-1 h-full min-w-[44px] min-h-[44px] text-label-sm {{ if eq .ActiveNav "registro" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_log" . }}{{ t "nav.registro" }}</a>
+          <a href="/relatorios" class="flex flex-col items-center justify-center gap-1 flex-1 h-full min-w-[44px] min-h-[44px] text-label-sm {{ if eq .ActiveNav "relatorios" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_chart" . }}{{ t "nav.relatorios" }}</a>
+          <a href="/apoio" class="flex flex-col items-center justify-center gap-1 flex-1 h-full min-w-[44px] min-h-[44px] text-label-sm {{ if eq .ActiveNav "apoio" }}text-primary font-bold{{ else }}text-on-surface-variant{{ end }}">{{ template "icon_maya" . }}{{ t "nav.apoio" }}</a>
           <!-- cais:nav -->
         </div>
       </nav>

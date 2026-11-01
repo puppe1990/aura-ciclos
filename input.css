@@ -101,19 +101,26 @@
     --md-on-primary: 65 1 0;
     --md-primary-fixed: 255 180 168;
     --md-on-primary-fixed: 65 1 0;
+    --md-primary-container: 201 74 56;
+    --md-on-primary-fixed-variant: 255 180 168;
     --md-secondary: 211 190 236;
     --md-on-secondary: 35 20 55;
     --md-secondary-container: 80 63 101;
     --md-secondary-fixed: 80 63 101;
     --md-on-secondary-fixed: 237 220 255;
+    --md-tertiary: 255 180 172;
+    --md-on-tertiary: 56 12 10;
     --md-tertiary-container: 165 98 92;
     --md-tertiary-fixed: 56 12 10;
     --md-on-tertiary-fixed: 255 180 172;
+    --md-error: 255 180 172;
     --md-surface-container-lowest: 20 19 18;
     --md-surface-container-low: 28 27 26;
     --md-surface-container: 36 35 34;
     --md-surface-container-high: 44 43 42;
+    --md-surface-container-highest: 49 48 47;
     --md-surface-variant: 49 48 47;
+    --md-inverse-surface: 244 240 237;
     --md-on-surface: 244 240 237;
     --md-on-surface-variant: 224 191 186;
     --md-outline: 140 113 108;
@@ -131,19 +138,26 @@
     --md-on-primary: 255 255 255;
     --md-primary-fixed: 255 218 212;
     --md-on-primary-fixed: 65 1 0;
+    --md-primary-container: 201 74 56;
+    --md-on-primary-fixed-variant: 138 28 16;
     --md-secondary: 104 87 126;
     --md-on-secondary: 255 255 255;
     --md-secondary-container: 231 209 255;
     --md-secondary-fixed: 237 220 255;
     --md-on-secondary-fixed: 35 20 55;
+    --md-tertiary: 136 75 69;
+    --md-on-tertiary: 255 255 255;
     --md-tertiary-container: 165 98 92;
     --md-tertiary-fixed: 255 218 214;
     --md-on-tertiary-fixed: 56 12 10;
+    --md-error: 186 26 26;
     --md-surface-container-lowest: 255 255 255;
     --md-surface-container-low: 247 243 240;
     --md-surface-container: 241 237 234;
     --md-surface-container-high: 235 231 228;
+    --md-surface-container-highest: 229 226 223;
     --md-surface-variant: 229 226 223;
+    --md-inverse-surface: 49 48 47;
     --md-on-surface: 28 27 26;
     --md-on-surface-variant: 88 65 61;
     --md-outline: 140 113 108;
@@ -171,6 +185,12 @@
 
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .aura-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
   }
 }
 

@@ -92,6 +92,29 @@ func TestCiclo_rendersDay14AndFertileWindow(t *testing.T) {
 	}
 }
 
+func TestCiclo_rendersStitchHero(t *testing.T) {
+	h, _, u := signedInTracker(t)
+	req := requestWithUser(http.MethodGet, "/ciclo", u.ID, nil)
+	rr := httptest.NewRecorder()
+	h.Ciclo(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d", rr.Code)
+	}
+	body := rr.Body.String()
+	for _, want := range []string{
+		"Ritmo Biológico Ativo",
+		"Olá,",
+		"Registrar Sintomas de Hoje",
+		"IA Adaptativa Aura",
+		"Fisiologia",
+		"LH &amp; Estrogênio",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("missing Stitch ciclo copy %q", want)
+		}
+	}
+}
+
 func TestRegistro_savesSymptomsFromFaker(t *testing.T) {
 	h, s, u := signedInTracker(t)
 	f := testdata.New()
@@ -133,6 +156,28 @@ func TestRegistro_rendersCatalog(t *testing.T) {
 	}
 }
 
+func TestRegistro_rendersStitchDiary(t *testing.T) {
+	h, _, u := signedInTracker(t)
+	req := requestWithUser(http.MethodGet, "/registro", u.ID, nil)
+	rr := httptest.NewRecorder()
+	h.Registro(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d", rr.Code)
+	}
+	body := rr.Body.String()
+	for _, want := range []string{
+		"Fluxo Menstrual",
+		"Humor &amp; Energia",
+		"Estilo de Vida",
+		"Salvar Registro do Dia",
+		"Bateria Corporal",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("missing Stitch registro copy %q", want)
+		}
+	}
+}
+
 func TestRelatorios_showsRegularity(t *testing.T) {
 	h, _, u := signedInTracker(t)
 	req := requestWithUser(http.MethodGet, "/relatorios", u.ID, nil)
@@ -144,6 +189,32 @@ func TestRelatorios_showsRegularity(t *testing.T) {
 	body := rr.Body.String()
 	if !strings.Contains(body, "Regular") && !strings.Contains(body, "regular") {
 		t.Errorf("missing regularity, got: %s", body)
+	}
+}
+
+func TestRelatorios_rendersStitchModes(t *testing.T) {
+	h, _, u := signedInTracker(t)
+	req := requestWithUser(http.MethodGet, "/relatorios", u.ID, nil)
+	rr := httptest.NewRecorder()
+	h.Relatorios(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d", rr.Code)
+	}
+	body := rr.Body.String()
+	for _, want := range []string{
+		"Selecione seu Modo",
+		"Acompanhar Ciclo",
+		"Crescer a Família",
+		"Acompanhar Gravidez",
+		"Relatórios Clínicos",
+		"Consulta Médica Facilitada",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("missing Stitch relatórios copy %q", want)
+		}
+	}
+	if strings.Contains(body, "Criptografia de ponta a ponta") || strings.Contains(body, "E2EE") {
+		t.Error("relatórios must not claim E2EE")
 	}
 }
 
@@ -175,6 +246,31 @@ func TestApoio_listsArticles(t *testing.T) {
 	}
 	if !strings.Contains(rr.Body.String(), "janela fértil") && !strings.Contains(rr.Body.String(), "Janela fértil") && !strings.Contains(rr.Body.String(), "O que é a janela") {
 		t.Errorf("missing articles, got: %s", rr.Body.String())
+	}
+}
+
+func TestApoio_rendersStitchSupport(t *testing.T) {
+	h, _, u := signedInTracker(t)
+	req := requestWithUser(http.MethodGet, "/apoio", u.ID, nil)
+	rr := httptest.NewRecorder()
+	h.Apoio(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d", rr.Code)
+	}
+	body := rr.Body.String()
+	for _, want := range []string{
+		"Seu Refúgio Seguro",
+		"Conversar com a Maya",
+		"Central de Lembretes",
+		"Biblioteca Clínica",
+		"SQLite",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("missing Stitch apoio copy %q", want)
+		}
+	}
+	if strings.Contains(body, "Criptografia Ponta a Ponta") || strings.Contains(body, "(E2EE)") {
+		t.Error("apoio must not claim E2EE")
 	}
 }
 

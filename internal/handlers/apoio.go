@@ -28,18 +28,27 @@ func (h *TrackerHandler) Apoio(w http.ResponseWriter, r *http.Request) {
 		httpx.ServerError(w, err, h.cfg)
 		return
 	}
+	suggestion := maya.Reply("como estou hoje", maya.Context{
+		Phase:     data.fc.Phase,
+		CycleDay:  data.fc.CycleDay,
+		FertileOn: data.fc.ConceptionChance > 0,
+		ChancePct: data.fc.ConceptionChance,
+	})
 	h.page(w, r, "apoio", map[string]any{
-		"Title":      "Apoio & IA",
-		"ActiveNav":  "apoio",
-		"Name":       greetName(data.user, data.profile),
-		"Anonymous":  data.user.Anonymous || data.profile.Anonymous,
-		"Mode":       data.profile.Mode,
-		"ModeLabel":  cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
-		"Forecast":   data.fc,
-		"PhaseLabel": cycle.PhaseLabel(data.fc.Phase),
-		"Messages":   msgs,
-		"Articles":   articles.All(),
-		"Reminders":  rems,
+		"Title":          "Apoio & IA",
+		"ActiveNav":      "apoio",
+		"Name":           greetName(data.user, data.profile),
+		"Anonymous":      data.user.Anonymous || data.profile.Anonymous,
+		"Mode":           data.profile.Mode,
+		"ModeLabel":      cycle.ModeLabel(cycle.Mode(data.profile.Mode)),
+		"Forecast":       data.fc,
+		"PhaseLabel":     cycle.PhaseLabel(data.fc.Phase),
+		"PhaseBadge":     cycle.Physiology(data.fc.Phase).Badge,
+		"Messages":       msgs,
+		"Articles":       articles.All(),
+		"Reminders":      rems,
+		"Suggestion":     suggestion,
+		"NextPeriodDate": formatDayBR(data.fc.NextPeriodOn),
 	})
 }
 

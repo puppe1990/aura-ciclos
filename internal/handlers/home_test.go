@@ -45,6 +45,26 @@ func TestHomeHandler_RendersHTML(t *testing.T) {
 	}
 }
 
+func TestHomeHandler_stitchLanding(t *testing.T) {
+	h := newHomeHandler(t)
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rr := httptest.NewRecorder()
+	h.ServeHTTP(rr, req)
+	body := rr.Body.String()
+	if strings.Contains(body, "01 —") || strings.Contains(body, "01-") {
+		t.Error("guest home still has Amarra rails numbered aside")
+	}
+	if !strings.Contains(body, `viewBox="0 0 240 240"`) {
+		t.Error("guest home missing Stitch cycle ring preview")
+	}
+	if !strings.Contains(body, `data-testid="amarra-ready"`) {
+		t.Error("missing amarra-ready")
+	}
+	if !strings.Contains(body, "Active biological rhythm") && !strings.Contains(body, "Ritmo Biológico") {
+		t.Error("missing Stitch kicker")
+	}
+}
+
 func TestHomeHandler_ContentType(t *testing.T) {
 	h := newHomeHandler(t)
 

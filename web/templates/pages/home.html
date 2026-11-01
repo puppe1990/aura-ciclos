@@ -1,31 +1,73 @@
 {{ define "content" }}
-<section class="relative isolate overflow-hidden px-6 sm:px-10 lg:px-14 py-16 md:py-24">
-  <div class="pointer-events-none absolute -top-24 left-[12%] h-80 w-80 rounded-full bg-primary-fixed/50 blur-3xl"></div>
-  <div class="relative mx-auto max-w-5xl grid items-end gap-14 lg:grid-cols-12">
-    <div class="lg:col-span-7">
-      <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-primary">{{ t "home.berth_label" }}</p>
-      <h1 class="mt-5 text-[clamp(2.4rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-tight">{{ t "home.rails_heading" }}</h1>
-      <p data-testid="amarra-ready" class="mt-6 max-w-md text-lg leading-relaxed text-on-surface-variant">{{ t "home.rails_subtitle" }}</p>
-      <div class="mt-10 flex flex-wrap items-center gap-4">
-        <a href="/login" class="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-on-primary">{{ t "home.cta_board" }}</a>
-        <a href="/signup" class="inline-flex items-center rounded-full bg-surface-container px-5 py-2.5 text-sm font-semibold">{{ t "home.cta_signup" }}</a>
-        <a href="/anonimo" class="text-sm font-semibold text-primary">{{ t "home.cta_anon" }}</a>
-      </div>
-      <p class="mt-8 text-sm text-outline">{{ t "home.powered_by" }}</p>
+<div class="mx-auto w-full max-w-lg px-margin-mobile py-6 space-y-5">
+  <div class="flex items-center justify-between pt-2">
+    <div>
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-label-sm">
+        {{ template "icon_spark" . }}
+        {{ t "home.kicker" }}
+      </span>
+      <h1 class="text-headline-lg-mobile text-on-surface mt-1.5">{{ t "home.rails_heading" }}</h1>
     </div>
-    <aside class="lg:col-span-5">
-      <div class="bg-surface-container-lowest rounded-3xl p-7 shadow-sm">
-        <p class="text-[11px] font-bold uppercase tracking-[0.22em] text-primary">{{ t "home.manifest_label" }}</p>
-        <p class="mt-3 text-2xl font-bold">Aura Ciclos</p>
-        <p class="mt-1 text-sm text-on-surface-variant">{{ t "home.stack" }}</p>
-        <ol class="mt-7 space-y-3 text-sm text-on-surface-variant">
-          <li><span class="text-primary font-bold">01 —</span> {{ t "home.step_resource" }}</li>
-          <li><span class="text-primary font-bold">02 —</span> {{ t "home.step_dev" }}</li>
-          <li><span class="text-primary font-bold">03 —</span> {{ t "home.step_docs" }}</li>
-        </ol>
-        <p class="mt-7 border-t border-outline-variant/50 pt-4 text-sm">{{ t "home.minimal.hint" }}</p>
-      </div>
-    </aside>
   </div>
-</section>
+
+  <p data-testid="amarra-ready" class="text-body-md text-on-surface-variant leading-relaxed">{{ t "home.rails_subtitle" }}</p>
+
+  <div class="flex flex-col gap-3">
+    <a href="/signup" class="w-full h-14 rounded-full bg-primary hover:bg-primary-container text-on-primary text-label-lg flex items-center justify-center gap-2 shadow-xl shadow-primary/25">{{ t "home.cta_signup" }}</a>
+    <div class="flex flex-wrap items-center justify-center gap-4">
+      <a href="/login" class="text-label-lg text-primary font-semibold">{{ t "home.cta_board" }}</a>
+      <a href="/anonimo" class="text-label-lg text-on-surface-variant font-semibold">{{ t "home.cta_anon" }}</a>
+    </div>
+  </div>
+
+  <div class="relative bg-surface-container-lowest rounded-3xl p-6 shadow-sm flex flex-col items-center text-center overflow-hidden">
+    <div class="absolute -top-16 -right-16 w-52 h-52 rounded-full bg-primary-fixed/35 blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-16 -left-16 w-52 h-52 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+    <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-label-md mb-4 shadow-sm">
+      {{ template "icon_spa" . }}
+      {{ t "home.preview_phase" }}
+    </div>
+    <div class="relative w-64 h-64 flex items-center justify-center my-2">
+      <svg class="w-full h-full -rotate-90" viewBox="0 0 240 240" aria-hidden="true">
+        <circle cx="120" cy="120" fill="none" r="98" stroke="#F1EDEA" stroke-linecap="round" stroke-width="14"></circle>
+        <circle cx="120" cy="120" fill="none" r="98" stroke="#E5E2DF" stroke-dasharray="100 515" stroke-dashoffset="0" stroke-linecap="round" stroke-width="14"></circle>
+        <circle cx="120" cy="120" fill="none" r="98" stroke="#EDDCFF" stroke-dasharray="125 490" stroke-dashoffset="-108" stroke-linecap="round" stroke-width="14"></circle>
+        <circle cx="120" cy="120" fill="none" r="98" stroke="#C94A38" stroke-dasharray="115 500" stroke-dashoffset="-240" stroke-linecap="round" stroke-width="14"></circle>
+        <circle cx="120" cy="120" fill="none" r="98" stroke="#F1EDEA" stroke-dasharray="245 370" stroke-dashoffset="-362" stroke-linecap="round" stroke-width="14"></circle>
+        <circle cx="218" cy="120" fill="#A83223" r="9"></circle>
+        <circle cx="218" cy="120" fill="#FFFFFF" r="4"></circle>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center px-4">
+        <span class="text-label-sm tracking-wider uppercase text-outline">{{ t "home.preview_today" }}</span>
+        <span class="text-headline-xl-mobile text-primary font-bold my-0.5">{{ t "home.preview_day" }}</span>
+        <span class="text-label-md text-on-surface-variant font-medium">{{ t "home.preview_length" }}</span>
+        <span class="mt-2.5 px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed text-label-sm flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+          {{ t "home.preview_peak" }}
+        </span>
+      </div>
+    </div>
+    <div class="w-full mt-3 flex items-center justify-around bg-surface-container-low rounded-2xl p-3">
+      <div class="flex flex-col items-center">
+        <span class="text-label-sm text-on-surface-variant">{{ t "home.preview_next" }}</span>
+        <span class="text-label-lg text-on-surface font-bold mt-0.5">{{ t "home.preview_days" }}</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="space-y-3">
+    <span class="text-label-lg text-on-surface">{{ t "home.mode_pick" }}</span>
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm">
+      <h2 class="text-headline-md text-on-surface">{{ t "home.step_resource" }}</h2>
+    </article>
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm">
+      <h2 class="text-headline-md text-on-surface">{{ t "home.step_dev" }}</h2>
+    </article>
+    <article class="rounded-3xl bg-surface-container-lowest p-space-lg shadow-sm">
+      <h2 class="text-headline-md text-on-surface">{{ t "home.step_docs" }}</h2>
+    </article>
+  </section>
+
+  <p class="text-body-sm text-outline pb-6">{{ t "home.powered_by" }}</p>
+</div>
 {{ end }}
