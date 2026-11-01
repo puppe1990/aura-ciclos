@@ -112,6 +112,13 @@ func (h *TrackerHandler) RegistroPost(w http.ResponseWriter, r *http.Request) {
 		PregnancyTest:   r.FormValue("pregnancy_test"),
 		Notes:           strings.TrimSpace(r.FormValue("notes")),
 	}
+	if existing, err := h.store.GetDailyLog(id, day); err == nil {
+		if strings.TrimSpace(log.Sex) == "" {
+			log.Sex = existing.Sex
+		}
+		log.SexTimes = existing.SexTimes
+		log.Orgasm = existing.Orgasm
+	}
 	if err := h.store.UpsertDailyLog(log); err != nil {
 		httpx.ServerError(w, err, h.cfg)
 		return

@@ -49,6 +49,8 @@ type DailyLog struct {
 	WaterGlasses    int
 	ExerciseMinutes int
 	Sex             string
+	SexTimes        int
+	Orgasm          string
 	BBTCelsius      *float64
 	OvulationTest   string
 	PregnancyTest   string

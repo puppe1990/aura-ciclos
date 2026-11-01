@@ -31,6 +31,7 @@
     <a href="#section-fisicos" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Sintomas Físicos</a>
     <a href="#section-humor" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Humor &amp; Energia</a>
     <a href="#section-estilo" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Estilo de Vida</a>
+    <a href="/registro/vida-sexual?dia={{ .Day }}" class="px-3.5 py-2 rounded-full text-label-md flex items-center gap-1.5 whitespace-nowrap bg-surface-container-lowest text-on-surface-variant">Vida sexual</a>
   </div>
 
   <.form action="/registro" method="post" class="space-y-space-md">
@@ -163,23 +164,13 @@
       <input type="hidden" name="water_glasses" id="waterGlasses" value="{{ $.Log.WaterGlasses }}" />
       <.input name="sleep_hours" type="text" label="Sono da noite (horas)" value="{{ $.Log.SleepHours }}" />
       {{ if $.SleepQuality }}<p class="text-label-sm text-on-surface-variant">Qualidade: {{ $.SleepQuality }} · {{ $.SleepLabel }}</p>{{ end }}
-      <div class="space-y-2">
-        <span class="text-label-md text-on-surface-variant">Relações Sexuais</span>
-        <div class="grid grid-cols-3 gap-2">
-          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
-            <input type="radio" name="sex" value="protegida" class="sr-only" {{ if eq $.Log.Sex "protegida" }}checked{{ end }} />
-            Com proteção
-          </label>
-          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
-            <input type="radio" name="sex" value="desprotegida" class="sr-only" {{ if eq $.Log.Sex "desprotegida" }}checked{{ end }} />
-            Desprotegida
-          </label>
-          <label class="py-2.5 px-2 rounded-full text-label-sm text-center cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary has-[:checked]:font-bold">
-            <input type="radio" name="sex" value="nao" class="sr-only" {{ if eq $.Log.Sex "nao" }}checked{{ end }} />
-            Não
-          </label>
+      <a href="/registro/vida-sexual?dia={{ $.Day }}" class="bg-surface-container-low rounded-2xl p-space-md flex items-center justify-between gap-3">
+        <div>
+          <span class="text-label-md text-on-surface block">Vida sexual</span>
+          <span class="text-body-sm text-on-surface-variant">Preservativo, orgasmo e vezes</span>
         </div>
-      </div>
+        <span class="text-primary">{{ template "icon_arrow" $ }}</span>
+      </a>
       <div class="flex flex-wrap gap-2">
         {{ range .Items }}
         <label class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-label-sm cursor-pointer bg-surface-container-low text-on-surface-variant has-[:checked]:bg-primary has-[:checked]:text-on-primary">

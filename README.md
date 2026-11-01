@@ -9,7 +9,7 @@ Os registros ficam em SQLite no servidor. Não há criptografia ponta a ponta.
 ## O que o app faz
 
 - **Ciclo** (`/ciclo`) — anel do ciclo, dia atual, próxima menstruação, precisão da previsão e registro de fluxo.
-- **Registro** (`/registro`) — catálogo de sintomas, humor, energia, sono, água, exercício, relações; no modo tentantes, BBT e testes.
+- **Registro** (`/registro`) — catálogo de sintomas, humor, energia, sono, água, exercício; **Vida sexual** (`/registro/vida-sexual`) com preservativo, orgasmo e vezes. No modo tentantes, BBT e testes.
 - **Relatórios** (`/relatorios`) — regularidade, duração das fases, sintomas mais registrados e troca de modo.
 - **Apoio** (`/apoio`) — Maya por palavras-chave, artigos revisados e lembretes (pílula, água, menstruação).
 - **Anônimo** (`/anonimo`) — conta sem nome nem e-mail; a sessão fica neste aparelho.

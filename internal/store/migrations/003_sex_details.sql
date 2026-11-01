@@ -1,0 +1,3 @@
+-- up
+ALTER TABLE daily_logs ADD COLUMN sex_times INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE daily_logs ADD COLUMN orgasm TEXT NOT NULL DEFAULT '';

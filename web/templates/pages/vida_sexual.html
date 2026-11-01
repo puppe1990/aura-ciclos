@@ -1,0 +1,129 @@
+{{ define "content" }}
+<div class="flex flex-col min-h-[calc(100vh-12rem)]">
+  <div class="flex items-center justify-between mb-6">
+    <a href="/registro?dia={{ .Day }}" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface hover:bg-surface-container" aria-label="Voltar">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </a>
+    <h2 class="text-headline-md text-on-surface">Vida sexual</h2>
+    <button type="button" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-on-surface hover:bg-surface-container" data-aura-intimate-toggle aria-label="Ocultar conteúdo" aria-controls="auraIntimate">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+    </button>
+  </div>
+
+  <div id="auraIntimate">
+  {{ if .Analise }}
+  <div class="bg-surface-container-lowest rounded-3xl p-6 shadow-sm space-y-5">
+    <h3 class="text-headline-md">Análise</h3>
+    <p class="text-body-sm text-on-surface-variant">Contagem dos registros de vida sexual neste aparelho, no histórico recente.</p>
+    <dl class="grid grid-cols-2 gap-3">
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Dias com relação</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ if eq .Analysis.Days 1 }}1 dia{{ else }}{{ .Analysis.Days }} dias{{ end }}</dd>
+      </div>
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Total</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ if eq .Analysis.Times 1 }}1 vez{{ else }}{{ .Analysis.Times }} vezes{{ end }}</dd>
+      </div>
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Protegido</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ .Analysis.ProtectedDays }}</dd>
+      </div>
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Desprotegido</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ .Analysis.UnprotectedDays }}</dd>
+      </div>
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Orgasmo sim</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ .Analysis.OrgasmYes }}</dd>
+      </div>
+      <div class="rounded-2xl bg-surface-container-low p-4">
+        <dt class="text-label-sm text-on-surface-variant">Orgasmo não</dt>
+        <dd class="text-headline-md text-on-surface mt-1">{{ .Analysis.OrgasmNo }}</dd>
+      </div>
+    </dl>
+    <a href="/registro/vida-sexual?dia={{ .Day }}" class="flex h-12 w-full items-center justify-center rounded-full bg-primary text-on-primary font-semibold">Voltar ao registro</a>
+  </div>
+  {{ else }}
+  <.form action="/registro/vida-sexual" method="post" class="flex flex-col flex-1">
+    <input type="hidden" name="logged_on" value="{{ .Day }}" />
+    <input type="hidden" name="sex_times" id="sexTimes" value="{{ .Log.SexTimes }}" />
+
+    <section class="mb-8">
+      <h3 class="text-headline-md text-on-surface mb-5">Preservativo relações</h3>
+      <div class="grid grid-cols-2 gap-6 max-w-xs">
+        <label class="flex flex-col items-center gap-2 cursor-pointer">
+          <span class="w-[4.5rem] h-[4.5rem] rounded-full bg-primary-fixed/70 flex items-center justify-center text-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/30 has-[:checked]:bg-primary-fixed">
+            <input type="radio" name="sex" value="protegida" class="sr-only" {{ if eq .Log.Sex "protegida" }}checked{{ end }} />
+            <svg class="w-10 h-10" viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="18" fill="currentColor" opacity="0.15"/>
+              <path d="M16 28c2.2 4 13.8 4 16 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              <circle cx="18.5" cy="21" r="1.6" fill="currentColor"/>
+              <circle cx="29.5" cy="21" r="1.6" fill="currentColor"/>
+              <path d="M24 10v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="text-label-md text-on-surface-variant">Protegido</span>
+        </label>
+        <label class="flex flex-col items-center gap-2 cursor-pointer">
+          <span class="w-[4.5rem] h-[4.5rem] rounded-full bg-primary-fixed/70 flex items-center justify-center text-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/30 has-[:checked]:bg-primary-fixed">
+            <input type="radio" name="sex" value="desprotegida" class="sr-only" {{ if eq .Log.Sex "desprotegida" }}checked{{ end }} />
+            <svg class="w-10 h-10" viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="24" r="18" fill="currentColor" opacity="0.15"/>
+              <circle cx="24" cy="29" r="2.4" fill="none" stroke="currentColor" stroke-width="2"/>
+              <circle cx="18.5" cy="21" r="1.6" fill="currentColor"/>
+              <circle cx="29.5" cy="21" r="1.6" fill="currentColor"/>
+              <path d="M24 10v6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="text-label-md text-on-surface-variant">Desprotegido</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="mb-8">
+      <h3 class="text-headline-md text-on-surface mb-5">Orgasmo feminino</h3>
+      <div class="grid grid-cols-2 gap-6 max-w-xs">
+        <label class="flex flex-col items-center gap-2 cursor-pointer">
+          <span class="w-[4.5rem] h-[4.5rem] rounded-full bg-primary-fixed/70 flex items-center justify-center text-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/30 has-[:checked]:bg-primary-fixed">
+            <input type="radio" name="orgasm" value="sim" class="sr-only" {{ if eq .Log.Orgasm "sim" }}checked{{ end }} />
+            <svg class="w-10 h-10" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M24 40s-12-7.4-16-14C5.2 20.2 8 14 14.4 14c3.2 0 5.5 1.7 6.4 3.4C21.7 15.7 24 14 27.2 14 33.6 14 36.4 20.2 33.2 26 28.8 32.6 24 40 24 40z" fill="currentColor" opacity="0.9"/>
+              <path d="M18 24c1.4 2.6 8.6 2.6 10 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="text-label-md text-on-surface-variant">Sim</span>
+        </label>
+        <label class="flex flex-col items-center gap-2 cursor-pointer">
+          <span class="w-[4.5rem] h-[4.5rem] rounded-full bg-primary-fixed/70 flex items-center justify-center text-primary has-[:checked]:ring-4 has-[:checked]:ring-primary/30 has-[:checked]:bg-primary-fixed">
+            <input type="radio" name="orgasm" value="nao" class="sr-only" {{ if eq .Log.Orgasm "nao" }}checked{{ end }} />
+            <svg class="w-10 h-10" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M24 40s-12-7.4-16-14C5.2 20.2 8 14 14.4 14c3.2 0 5.5 1.7 6.4 3.4C21.7 15.7 24 14 27.2 14 33.6 14 36.4 20.2 33.2 26 28.8 32.6 24 40 24 40z" fill="currentColor" opacity="0.9"/>
+              <path d="M28 26c-1.4-2.2-8.6-2.2-10 0" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="text-label-md text-on-surface-variant">Não</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h3 class="text-headline-md text-on-surface mb-6">vezes</h3>
+      <div class="flex items-center justify-between max-w-xs">
+        <button type="button" class="w-12 h-12 rounded-full bg-primary-fixed text-primary text-2xl leading-none flex items-center justify-center" data-aura-sex-times="-1" aria-label="Diminuir vezes">−</button>
+        <span class="text-4xl font-bold text-on-surface tabular-nums" id="sexTimesDisplay">{{ .Log.SexTimes }}</span>
+        <button type="button" class="w-12 h-12 rounded-full bg-primary-fixed text-primary text-2xl leading-none flex items-center justify-center" data-aura-sex-times="1" aria-label="Aumentar vezes">+</button>
+      </div>
+    </section>
+
+    <div class="mt-auto space-y-3 pb-4">
+      <.button type="submit">Salvar</.button>
+      <a href="/registro/vida-sexual?dia={{ .Day }}&analise=1" class="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-secondary-fixed text-on-secondary-fixed font-semibold">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 19V9m6 10V5m6 14v-7"/></svg>
+        Análise
+      </a>
+    </div>
+  </.form>
+  {{ end }}
+  </div>
+</div>
+{{ end }}

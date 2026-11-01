@@ -117,6 +117,37 @@ func TestStore_dailyLogSymptomsAndBBT(t *testing.T) {
 	}
 }
 
+func TestStore_dailyLogSexDetails(t *testing.T) {
+	s := newTestStore(t)
+	f := testdata.New()
+	id, err := s.CreateUser(testdata.Email(f), "hash")
+	if err != nil {
+		t.Fatal(err)
+	}
+	log := models.DailyLog{
+		UserID:     id,
+		LoggedOn:   testdata.Day(2026, 11, 1),
+		SymptomIDs: testdata.SymptomIDs(f, 2),
+		Mood:       "calma",
+		Sex:        "protegida",
+		SexTimes:   3,
+		Orgasm:     "sim",
+	}
+	if err := s.UpsertDailyLog(log); err != nil {
+		t.Fatal(err)
+	}
+	got, err := s.GetDailyLog(id, log.LoggedOn)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Sex != "protegida" || got.SexTimes != 3 || got.Orgasm != "sim" {
+		t.Fatalf("sex details = sex=%q times=%d orgasm=%q", got.Sex, got.SexTimes, got.Orgasm)
+	}
+	if len(got.SymptomIDs) != 2 {
+		t.Fatalf("symptoms = %v, want 2 kept", got.SymptomIDs)
+	}
+}
+
 func TestStore_remindersAndMaya(t *testing.T) {
 	s := newTestStore(t)
 	f := testdata.New()

@@ -40,6 +40,8 @@ func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {
 	r.Post("/ciclo/periodo", middleware.RequireAuthFunc("/login", tracker.PeriodoPost))
 	r.Get("/registro", middleware.RequireAuthFunc("/login", tracker.Registro))
 	r.Post("/registro", middleware.RequireAuthFunc("/login", tracker.RegistroPost))
+	r.Get("/registro/vida-sexual", middleware.RequireAuthFunc("/login", tracker.VidaSexual))
+	r.Post("/registro/vida-sexual", middleware.RequireAuthFunc("/login", tracker.VidaSexualPost))
 	r.Get("/relatorios", middleware.RequireAuthFunc("/login", tracker.Relatorios))
 	r.Post("/modo", middleware.RequireAuthFunc("/login", tracker.ModoPost))
 	r.Get("/apoio", middleware.RequireAuthFunc("/login", tracker.Apoio))

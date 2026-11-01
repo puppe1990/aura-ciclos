@@ -149,8 +149,8 @@ func (s *SQLiteStore) UpsertDailyLog(l models.DailyLog) error {
 	_, err = s.db.Exec(
 		`INSERT INTO daily_logs (
 			user_id, logged_on, symptom_ids, mood, energy, sleep_hours, water_glasses,
-			exercise_minutes, sex, bbt_celsius, ovulation_test, pregnancy_test, notes
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+			exercise_minutes, sex, sex_times, orgasm, bbt_celsius, ovulation_test, pregnancy_test, notes
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		 ON CONFLICT(user_id, logged_on) DO UPDATE SET
 			symptom_ids = excluded.symptom_ids,
 			mood = excluded.mood,
@@ -159,12 +159,14 @@ func (s *SQLiteStore) UpsertDailyLog(l models.DailyLog) error {
 			water_glasses = excluded.water_glasses,
 			exercise_minutes = excluded.exercise_minutes,
 			sex = excluded.sex,
+			sex_times = excluded.sex_times,
+			orgasm = excluded.orgasm,
 			bbt_celsius = excluded.bbt_celsius,
 			ovulation_test = excluded.ovulation_test,
 			pregnancy_test = excluded.pregnancy_test,
 			notes = excluded.notes`,
 		l.UserID, formatDay(l.LoggedOn), string(ids), l.Mood, l.Energy, l.SleepHours, l.WaterGlasses,
-		l.ExerciseMinutes, l.Sex, bbt, l.OvulationTest, l.PregnancyTest, l.Notes,
+		l.ExerciseMinutes, l.Sex, l.SexTimes, l.Orgasm, bbt, l.OvulationTest, l.PregnancyTest, l.Notes,
 	)
 	if err != nil {
 		return fmt.Errorf("upsert daily log: %w", err)
@@ -175,7 +177,7 @@ func (s *SQLiteStore) UpsertDailyLog(l models.DailyLog) error {
 func (s *SQLiteStore) GetDailyLog(userID int64, day time.Time) (models.DailyLog, error) {
 	row := s.db.QueryRow(
 		`SELECT id, user_id, logged_on, symptom_ids, mood, energy, sleep_hours, water_glasses,
-		        exercise_minutes, sex, bbt_celsius, ovulation_test, pregnancy_test, notes
+		        exercise_minutes, sex, sex_times, orgasm, bbt_celsius, ovulation_test, pregnancy_test, notes
 		 FROM daily_logs WHERE user_id = ? AND logged_on = ?`,
 		userID, formatDay(day),
 	)
@@ -189,7 +191,7 @@ func (s *SQLiteStore) GetDailyLog(userID int64, day time.Time) (models.DailyLog,
 func (s *SQLiteStore) ListDailyLogs(userID int64, since time.Time) ([]models.DailyLog, error) {
 	rows, err := s.db.Query(
 		`SELECT id, user_id, logged_on, symptom_ids, mood, energy, sleep_hours, water_glasses,
-		        exercise_minutes, sex, bbt_celsius, ovulation_test, pregnancy_test, notes
+		        exercise_minutes, sex, sex_times, orgasm, bbt_celsius, ovulation_test, pregnancy_test, notes
 		 FROM daily_logs WHERE user_id = ? AND logged_on >= ? ORDER BY logged_on ASC`,
 		userID, formatDay(since),
 	)
@@ -307,7 +309,7 @@ func scanDailyLog(row interface{ Scan(dest ...any) error }) (models.DailyLog, er
 	var bbt sql.NullFloat64
 	err := row.Scan(
 		&l.ID, &l.UserID, &day, &symptoms, &l.Mood, &l.Energy, &l.SleepHours, &l.WaterGlasses,
-		&l.ExerciseMinutes, &l.Sex, &bbt, &l.OvulationTest, &l.PregnancyTest, &l.Notes,
+		&l.ExerciseMinutes, &l.Sex, &l.SexTimes, &l.Orgasm, &bbt, &l.OvulationTest, &l.PregnancyTest, &l.Notes,
 	)
 	if err != nil {
 		return models.DailyLog{}, err
