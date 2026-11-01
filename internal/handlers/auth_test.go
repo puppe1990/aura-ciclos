@@ -63,6 +63,20 @@ func TestAuth_RevocationFailureReturnsServerError(t *testing.T) {
 		})
 	}
 }
+func TestAuth_Login_omitsRecoveryCode(t *testing.T) {
+	h, _ := newAuthHandler(t)
+	req := httptest.NewRequest(http.MethodGet, "/login", nil)
+	rr := httptest.NewRecorder()
+	h.Login(rr, req)
+	if rr.Code != http.StatusOK {
+		t.Fatalf("status = %d", rr.Code)
+	}
+	body := rr.Body.String()
+	if strings.Contains(body, `name="recovery_code"`) || strings.Contains(body, "Recovery code") {
+		t.Errorf("login must not offer a recovery code field, got: %s", body)
+	}
+}
+
 func TestAuth_Login_guestSubmitUsesStitchPrimary(t *testing.T) {
 	h, _ := newAuthHandler(t)
 	req := httptest.NewRequest(http.MethodGet, "/login", nil)

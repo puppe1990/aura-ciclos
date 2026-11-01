@@ -10,7 +10,7 @@
     <.password name="password_confirmation" label="{{ t "auth.password_confirmation_label" }}" error="{{ fieldError .Errors "password_confirmation" }}" autocomplete="new-password" required="required" />
     <.button type="submit">{{ t "settings.submit" }}</.button>
   </.form>
-  <p class="text-sm text-on-surface-variant">No modo anônimo a senha atual é o código de recuperação. Os registros ficam em SQLite no servidor; não há criptografia ponta a ponta.</p>
+  <p class="text-sm text-on-surface-variant">Os registros ficam em SQLite no servidor, protegidos por sessão. Não há criptografia ponta a ponta. No modo anônimo, sair encerra a sessão neste aparelho.</p>
   <.form action="/logout" method="post" data-amarra-skip>
     <.button type="submit">{{ t "auth.logout" }}</.button>
   </.form>

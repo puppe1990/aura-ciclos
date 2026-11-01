@@ -15,7 +15,7 @@ import (
 	"github.com/puppe1990/aura-ciclos/internal/store"
 )
 
-func TestAuth_AnonimoPost_createsRecoveryCode(t *testing.T) {
+func TestAuth_AnonimoPost_signsInWithoutShowingCode(t *testing.T) {
 	s, err := store.NewSQLiteStore(":memory:", "test")
 	if err != nil {
 		t.Fatal(err)
@@ -26,16 +26,28 @@ func TestAuth_AnonimoPost_createsRecoveryCode(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/anonimo", nil)
 	rr := httptest.NewRecorder()
 	h.AnonimoPost(rr, req)
-	if rr.Code != http.StatusOK {
+	if rr.Code != http.StatusSeeOther {
 		t.Fatalf("status = %d body=%s", rr.Code, rr.Body.String())
 	}
+	if rr.Header().Get("Location") != afterAuthPath {
+		t.Errorf("Location = %q, want %s", rr.Header().Get("Location"), afterAuthPath)
+	}
 	body := rr.Body.String()
-	if !strings.Contains(body, "código") && !strings.Contains(body, "Código") {
-		t.Errorf("missing recovery code copy: %s", body)
+	if strings.Contains(body, "código de recuperação") || strings.Contains(body, "RecoveryCode") {
+		t.Errorf("anon signup must not show a recovery code, got: %s", body)
+	}
+	foundSession := false
+	for _, c := range rr.Result().Cookies() {
+		if c.Name == session.DefaultCookieName && c.Value != "" {
+			foundSession = true
+		}
+	}
+	if !foundSession {
+		t.Error("anon signup must set a session cookie")
 	}
 }
 
-func TestAuth_LoginPost_recoveryCode(t *testing.T) {
+func TestAuth_LoginPost_recoveryCodeDoesNotSignIn(t *testing.T) {
 	s, err := store.NewSQLiteStore(":memory:", "test")
 	if err != nil {
 		t.Fatal(err)
@@ -61,10 +73,10 @@ func TestAuth_LoginPost_recoveryCode(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	rr := httptest.NewRecorder()
 	h.LoginPost(rr, req)
-	if rr.Code != http.StatusSeeOther {
-		t.Fatalf("status = %d body=%s", rr.Code, rr.Body.String())
+	if rr.Code != http.StatusUnprocessableEntity {
+		t.Fatalf("status = %d, want 422 body=%s", rr.Code, rr.Body.String())
 	}
-	if rr.Header().Get("Location") != afterAuthPath {
-		t.Errorf("Location = %q, want %s", rr.Header().Get("Location"), afterAuthPath)
+	if rr.Header().Get("Location") != "" {
+		t.Errorf("must not redirect on recovery-code login, Location=%q", rr.Header().Get("Location"))
 	}
 }

@@ -67,9 +67,5 @@ func (h *AuthHandler) AnonimoPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	flash.Set(w, "notice", h.t(r, "auth.anon_created"), h.cfg.CookieSecure())
-	h.renderAuth(w, r, "anonimo", map[string]any{
-		"Title":        h.t(r, "auth.anon_code_title"),
-		"RecoveryCode": code,
-		"Created":      true,
-	}, http.StatusOK)
+	http.Redirect(w, r, afterAuthPath, http.StatusSeeOther)
 }

@@ -5,7 +5,6 @@
   <.form action="/login" method="post" data-amarra-skip>
     <.input name="email" type="email" label="{{ t "auth.email_label" }}" value="{{ .Email }}" error="{{ fieldError .Errors "email" }}" />
     <.password name="password" label="{{ t "auth.password_label" }}" error="{{ fieldError .Errors "password" }}" autocomplete="current-password" />
-    <.input name="recovery_code" type="text" label="{{ t "auth.recovery_code_label" }}" error="{{ fieldError .Errors "recovery_code" }}" autocomplete="off" />
     <.button type="submit">{{ t "auth.login_submit" }}</.button>
   </.form>
   <p class="mt-4 text-center text-sm text-on-surface-variant space-y-1">

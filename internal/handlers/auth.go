@@ -16,7 +16,6 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
 	"github.com/puppe1990/amarra-cais/pkg/cais/validate"
 
-	"github.com/puppe1990/aura-ciclos/internal/anon"
 	"github.com/puppe1990/aura-ciclos/internal/store"
 )
 
@@ -73,18 +72,6 @@ func (h *AuthHandler) LoginPost(w http.ResponseWriter, r *http.Request) {
 
 	email := strings.TrimSpace(r.FormValue("email"))
 	password := r.FormValue("password")
-	if code := strings.TrimSpace(r.FormValue("recovery_code")); code != "" {
-		if !anon.ValidCode(code) {
-			h.renderAuth(w, r, "login", map[string]any{
-				"Title":  h.t(r, "auth.login_title"),
-				"Email":  email,
-				"Errors": validate.FieldErrors{"recovery_code": h.t(r, "auth.invalid_recovery")},
-			}, http.StatusUnprocessableEntity)
-			return
-		}
-		email = anon.EmailFor(code)
-		password = anon.NormalizeCode(code)
-	}
 	user, err := h.store.FindUserByEmail(email)
 	if err != nil || !session.VerifyPassword(user.PasswordHash, password) {
 		h.renderAuth(w, r, "login", map[string]any{

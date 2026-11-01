@@ -12,7 +12,7 @@ Os registros ficam em SQLite no servidor. Não há criptografia ponta a ponta.
 - **Registro** (`/registro`) — catálogo de sintomas, humor, energia, sono, água, exercício, relações; no modo tentantes, BBT e testes.
 - **Relatórios** (`/relatorios`) — regularidade, duração das fases, sintomas mais registrados e troca de modo.
 - **Apoio** (`/apoio`) — Maya por palavras-chave, artigos revisados e lembretes (pílula, água, menstruação).
-- **Anônimo** (`/anonimo`) — conta sem nome nem e-mail; um código de recuperação é a única chave.
+- **Anônimo** (`/anonimo`) — conta sem nome nem e-mail; a sessão fica neste aparelho.
 
 A previsão usa a média dos últimos até 6 intervalos, fase lútea de 14 dias, janela fértil de ovulação−5 até +1. Ciclo irregular quando o desvio-padrão da amostra ≥ 4 dias. Teste de ovulação positivo vale mais que BBT, que vale mais que o calendário.
 

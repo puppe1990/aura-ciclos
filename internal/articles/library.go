@@ -69,9 +69,9 @@ A BBT confirma ovulação depois que ela aconteceu. Não serve para “pegar o d
 		Title:      "Privacidade do seu ciclo",
 		Summary:    "Modo anônimo não pede nome nem e-mail; os dados ficam no servidor da app, sem E2EE milagroso.",
 		ReviewedBy: "Equipe Aura Ciclos",
-		Body: `Ciclo, humor e libido são dados sensíveis. O Aura Ciclos oferece um modo anônimo: a conta nasce com um e-mail interno e um código de recuperação. Guarde o código — sem ele não há como reabrir a conta.
+		Body: `Ciclo, humor e libido são dados sensíveis. O Aura Ciclos oferece um modo anônimo: a conta nasce sem e-mail visível e fica ligada à sessão do navegador. Sair encerra o acesso neste aparelho.
 
-Os registros ficam em SQLite no servidor da aplicação, protegidos por sessão e senha (ou código). Não há criptografia ponta a ponta neste produto: quem opera o servidor consegue, em tese, ler o banco. Essa honestidade importa mais do que um selo falso.
+Os registros ficam em SQLite no servidor da aplicação, protegidos por sessão. Não há criptografia ponta a ponta neste produto: quem opera o servidor consegue, em tese, ler o banco. Essa honestidade importa mais do que um selo falso.
 
 Não compartilhe prints do ciclo em redes. No modo anônimo o app não mostra e-mail na interface. Em qualquer modo, o logout encerra a sessão neste navegador.`,
 	},
